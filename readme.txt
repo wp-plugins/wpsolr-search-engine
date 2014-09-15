@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 1.0
+Current Version: 1.1
 
 Author:  WPSOLR.COM
 
@@ -12,9 +12,9 @@ Tags: Solr in WordPress, Solr search, fast search, WPSOLR
 
 Requires at least: 3.7.1
 
-Tested up to: 4.1
+Tested up to: 4.0
 
-Stable tag: trunk
+Stable tag: 1.1
 
 Solr search with facets, autocompletion, and suggestions
 
