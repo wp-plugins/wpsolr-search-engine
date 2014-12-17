@@ -1,4 +1,4 @@
-I=== WPSOLR Search Engine ===
+=== WPSOLR Search Engine ===
 
 Contributors: WPSOLR.COM
 
