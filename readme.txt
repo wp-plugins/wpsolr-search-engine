@@ -1,8 +1,8 @@
-=== WPSOLR Search Engine ===
+I=== WPSOLR Search Engine ===
 
 Contributors: WPSOLR.COM
 
-Current Version: 1.4
+Current Version: 1.5
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.0
 
-Stable tag: 1.4
+Stable tag: 1.5
 
 World class Enterprise Search with facets, autocompletion, suggestions, and optional hosting
 
@@ -61,6 +61,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 1.5 =
+* Can now index tens of thousands of documents without freezing or timeout
 
 = 1.4 =
 * Fixed warning on search page for self hosted Solr

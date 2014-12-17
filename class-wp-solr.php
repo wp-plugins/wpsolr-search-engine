@@ -878,68 +878,95 @@ class wp_Solr {
     public function build_query()
     {
         global $wpdb;
-        $batchsize=100;
-        $cnt=0;
-        $tbl=$wpdb->prefix.'posts';
-        $where='';
-        
-         $client=$this->client;
+
+        $batchsize = 100;
+        $res_final = 0;
+        $cnt = 0;
+
+        $tbl = $wpdb->prefix . 'posts';
+        $where = '';
+
+        $client = $this->client;
         $updateQuery = $client->createUpdate();
-        
-        $ind_opt=get_option('wdm_solr_form_data');
-       
-        $post_types=$ind_opt['p_types'];
-        $exclude_id=$ind_opt['exclude_ids'];
-        $ex_ids=array();
-        $ex_ids=explode(',',$exclude_id);
-        $posts=explode(',',$post_types);
-        for($i=0;$i<=count($posts)-2;$i++){
-            $where.=" post_type='$posts[$i]' OR";
+
+        $ind_opt = get_option('wdm_solr_form_data');
+
+        $post_types = $ind_opt['p_types'];
+        $exclude_id = $ind_opt['exclude_ids'];
+        $ex_ids = array();
+        $ex_ids = explode(',', $exclude_id);
+        $posts = explode(',', $post_types);
+        for ($i = 0; $i <= count($posts) - 2; $i++) {
+            $where .= " post_type='$posts[$i]' OR";
         }
-         $where.=" post_type='$posts[$i]'";
-      $query="SELECT ID FROM $tbl WHERE post_status='publish' AND ( $where ) ORDER BY ID ";
-     
-        $ids_array=$wpdb->get_col($query);
-        
-        $postcount = count($ids_array);
-        $doc_count=0;
-	for ($idx = 0; $idx < $postcount; $idx++)
-        {
-		$postid = $ids_array[$idx];
-		
-                if (!in_array($postid, $ex_ids) )
-                {
-                   $doc_count++;
-                    $documents[] = wp_Solr::get_single_document($updateQuery,$ind_opt,get_post($postid) );    
-		}
-               
-	
-		$cnt++;
-		if ($cnt == $batchsize || $cnt== $postcount) {
-			$res_final=wp_Solr::add_data_to_index( $updateQuery, $documents);
-		                       
-		                      
-			$cnt = 0;
-			$documents = array();
-			
-		}
-                
-	}
-         //
-        
-         $solr_options=get_option('wdm_solr_conf_data');
-         
-         if($solr_options['host_type']=='self_hosted')
-           {
-             update_option('solr_docs_in_self_index',$doc_count);
-           }
-           else{
-            update_option('solr_docs_in_cloud_index',$doc_count);
-           }
-          
-          return $res_final;
-            
+        $where .= " post_type='$posts[$i]'";
+
+        $lastFetchedID = -1;
+
+        // Build the query
+        $query = "";
+        $query .= " SELECT ID ";
+        $query .= " FROM $tbl ";
+        $query .= " WHERE ";
+        $query .= " ID > %d ";
+        $query .= " AND post_status='publish' ";
+        $query .= " AND ( $where ) ";
+        $query .= " ORDER BY ID ASC";
+        $query .= " LIMIT $batchsize ";
+
+        $documents = array();
+        $doc_count = 0;
+        while (true) {
+
+            // Execute query (retrieve posts IDs)
+            $ids_array = $wpdb->get_col( $wpdb->prepare($query, $lastFetchedID) );
+
+            // Aggregate current batch IDs in one Solr update statement
+            $postcount = count($ids_array);
+
+            for ($idx = 0; $idx < $postcount; $idx++) {
+                $postid = $ids_array[$idx];
+
+                if (!in_array($postid, $ex_ids)) {
+                    $doc_count++;
+                    $documents[] = wp_Solr::get_single_document($updateQuery, $ind_opt, get_post($postid));
+                }
+            }
+
+            if (empty($documents) || !isset($documents)) {
+                // No more documents to index, stop now by exiting the loop
+                break;
+            }
+
+            // Send batch documents to Solr
+            $res_final = wp_Solr::add_data_to_index($updateQuery, $documents);
+
+            // Solr error: exit loop
+            if (!$res_final) {
+                break;
+            }
+
+            // Don't send twice the same documents
+            $documents = array();
+
+            // Store last post ID sent to Solr
+            $lastFetchedID = $postid;
+
+            // Update admin UI with nb of documents indexed
+            $solr_options = get_option('wdm_solr_conf_data');
+
+            if ($solr_options['host_type'] == 'self_hosted') {
+                update_option('solr_docs_in_self_index', $doc_count);
+            } else {
+                update_option('solr_docs_in_cloud_index', $doc_count);
+            }
+
+        }
+
+        return $res_final;
+
     }
+
     public function get_single_document($updateQuery,$opt,$post)
         {
                      
