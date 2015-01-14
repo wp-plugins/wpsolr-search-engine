@@ -30,10 +30,12 @@
  */
 
 namespace Solarium\Tests\Plugin\BufferedAdd;
+
 use Solarium\QueryType\Update\Query\Document\Document;
 use Solarium\Plugin\BufferedAdd\Event\AddDocument;
 use Solarium\Plugin\BufferedAdd\BufferedAdd;
 use Solarium\Core\Client\Client;
+use Solarium\Core\Client\Endpoint;
 use Solarium\Plugin\BufferedAdd\Event\Events;
 
 class BufferedAddTest extends \PHPUnit_Framework_TestCase
@@ -141,7 +143,9 @@ class BufferedAddTest extends \PHPUnit_Framework_TestCase
         $doc = new Document($data);
 
         $mockUpdate = $this->getMock('Solarium\QueryType\Update\Query\Query', array('addDocuments'));
-        $mockUpdate->expects($this->once())->method('addDocuments')->with($this->equalTo(array($doc)),$this->equalTo(true),$this->equalTo(12));
+        $mockUpdate->expects($this->once())
+            ->method('addDocuments')
+            ->with($this->equalTo(array($doc)), $this->equalTo(true), $this->equalTo(12));
 
         $mockClient = $this->getMock('Solarium\Core\Client\Client', array('createUpdate', 'update', 'triggerEvent'));
         $mockClient->expects($this->exactly(2))->method('createUpdate')->will($this->returnValue($mockUpdate));
@@ -151,7 +155,7 @@ class BufferedAddTest extends \PHPUnit_Framework_TestCase
         $plugin->initPlugin($mockClient, array());
         $plugin->addDocument($doc);
 
-        $this->assertEquals('dummyResult', $plugin->flush(true,12));
+        $this->assertEquals('dummyResult', $plugin->flush(true, 12));
     }
 
     public function testCommit()
@@ -160,8 +164,12 @@ class BufferedAddTest extends \PHPUnit_Framework_TestCase
         $doc = new Document($data);
 
         $mockUpdate = $this->getMock('Solarium\QueryType\Update\Query\Query', array('addDocuments', 'addCommit'));
-        $mockUpdate->expects($this->once())->method('addDocuments')->with($this->equalTo(array($doc)),$this->equalTo(true));
-        $mockUpdate->expects($this->once())->method('addCommit')->with($this->equalTo(false),$this->equalTo(true),$this->equalTo(false));
+        $mockUpdate->expects($this->once())
+            ->method('addDocuments')
+            ->with($this->equalTo(array($doc)), $this->equalTo(true));
+        $mockUpdate->expects($this->once())
+            ->method('addCommit')
+            ->with($this->equalTo(false), $this->equalTo(true), $this->equalTo(false));
 
         $mockClient = $this->getMock('Solarium\Core\Client\Client', array('createUpdate', 'update', 'triggerEvent'));
         $mockClient->expects($this->exactly(2))->method('createUpdate')->will($this->returnValue($mockUpdate));
@@ -188,11 +196,20 @@ class BufferedAddTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(Events::ADD_DOCUMENT), $this->equalTo($expectedEvent));
 
         $mockClient = $this->getMock('Solarium\Core\Client\Client', array('getEventDispatcher'));
-        $mockClient->expects($this->once())->method('getEventDispatcher')->will($this->returnValue($mockEventDispatcher));
+        $mockClient->expects($this->once())
+            ->method('getEventDispatcher')
+            ->will($this->returnValue($mockEventDispatcher));
 
         $plugin = new BufferedAdd();
         $plugin->initPlugin($mockClient, array());
         $plugin->addDocument($doc);
     }
 
+    public function testSetAndGetEndpoint()
+    {
+        $endpoint = new Endpoint();
+        $endpoint->setKey('master');
+        $this->assertEquals($this->plugin, $this->plugin->setEndpoint($endpoint));
+        $this->assertEquals($endpoint, $this->plugin->getEndPoint());
+    }
 }

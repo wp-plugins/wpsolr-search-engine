@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 1.6
+Current Version: 1.7
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.0
 
-Stable tag: 1.6
+Stable tag: 1.7
 
 World class Enterprise Search with facets, autocompletion, suggestions, and optional hosting
 
@@ -46,6 +46,7 @@ And now, with this plugin, you can get it for free. So, fasten your seat belt, a
 8. Configuration options allow you to select pages to ignore.
 9. Host Solr remotely using gotosolr.
 10. Solr configuration made easy.
+11. Incremental indexing
 
 For more details visit <a href='http://wpsolr.com'>wpsolr.com</a>
 
@@ -61,6 +62,13 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 1.7 =
+* Restart indexing at last document indexed (wether it fell in error, or timeout occured)
+* Prevent index deletion when indexing starts
+* Index post attachements
+* Add attachements checkbox in menu Solr Options -> Indexing Options -> Post types to be indexed.
+* Improve Solr error messages in Solr hosting tab, and Solr operations tab, including timeout messages.
 
 = 1.6 =
 * Can now index tens of thousands of documents without freezing or timeout

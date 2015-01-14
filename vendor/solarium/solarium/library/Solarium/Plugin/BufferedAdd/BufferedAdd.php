@@ -37,6 +37,7 @@
  * @namespace
  */
 namespace Solarium\Plugin\BufferedAdd;
+
 use Solarium\Client;
 use Solarium\Core\Plugin\Plugin;
 use Solarium\QueryType\Update\Result as UpdateResult;
@@ -57,7 +58,6 @@ use Solarium\Plugin\BufferedAdd\Event\AddDocument as AddDocumentEvent;
  */
 class BufferedAdd extends Plugin
 {
-
     /**
      * Default options
      *
@@ -92,6 +92,28 @@ class BufferedAdd extends Plugin
     protected function initPluginType()
     {
         $this->updateQuery = $this->client->createUpdate();
+    }
+
+    /**
+     * Set the endpoint for the documents
+     *
+     * @param string $endpoint The endpoint to set
+     *
+     * @return self
+     */
+    public function setEndpoint($endpoint)
+    {
+        return $this->setOption('endpoint', $endpoint);
+    }
+
+    /**
+     * Return the endpoint
+     *
+     * @return string
+     */
+    public function getEndPoint()
+    {
+        return $this->getOption('endpoint');
     }
 
     /**
@@ -208,7 +230,7 @@ class BufferedAdd extends Plugin
         $this->client->getEventDispatcher()->dispatch(Events::PRE_FLUSH, $event);
 
         $this->updateQuery->addDocuments($event->getBuffer(), $event->getOverwrite(), $event->getCommitWithin());
-        $result = $this->client->update($this->updateQuery);
+        $result = $this->client->update($this->updateQuery, $this->getEndpoint());
         $this->clear();
 
         $event = new PostFlushEvent($result);
@@ -235,7 +257,7 @@ class BufferedAdd extends Plugin
 
         $this->updateQuery->addDocuments($this->buffer, $event->getOverwrite());
         $this->updateQuery->addCommit($event->getSoftCommit(), $event->getWaitSearcher(), $event->getExpungeDeletes());
-        $result = $this->client->update($this->updateQuery);
+        $result = $this->client->update($this->updateQuery, $this->getEndpoint());
         $this->clear();
 
         $event = new PostCommitEvent($result);
@@ -243,5 +265,4 @@ class BufferedAdd extends Plugin
 
         return $result;
     }
-
 }

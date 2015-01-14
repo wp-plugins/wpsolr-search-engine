@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
-    'Solarium' => array($vendorDir . '/solarium/solarium/library'),
+    'Solarium\\' => array($vendorDir . '/solarium/solarium/library'),
 );

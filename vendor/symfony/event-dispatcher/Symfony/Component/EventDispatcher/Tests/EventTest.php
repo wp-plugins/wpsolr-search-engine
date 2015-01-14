@@ -35,7 +35,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->event = new Event;
+        $this->event = new Event();
         $this->dispatcher = new EventDispatcher();
     }
 
@@ -60,24 +60,28 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->event->isPropagationStopped());
     }
 
-    public function testSetDispatcher()
+    public function testLegacySetDispatcher()
     {
+        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
         $this->event->setDispatcher($this->dispatcher);
         $this->assertSame($this->dispatcher, $this->event->getDispatcher());
     }
 
-    public function testGetDispatcher()
+    public function testLegacyGetDispatcher()
     {
+        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
         $this->assertNull($this->event->getDispatcher());
     }
 
-    public function testGetName()
+    public function testLegacyGetName()
     {
+        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
         $this->assertNull($this->event->getName());
     }
 
-    public function testSetName()
+    public function testLegacySetName()
     {
+        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
         $this->event->setName('foo');
         $this->assertEquals('foo', $this->event->getName());
     }
