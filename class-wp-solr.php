@@ -425,14 +425,14 @@ class wp_Solr {
 
 			}
 			$msg = '';
-			$msg .= "<div id='res$i'><div class='p_title'><a href='$url' target='_blank'>$name</a></div>";
+			$msg .= "<div id='res$i'><div class='p_title'><a href='$url'>$name</a></div>";
 			if ( $cont_no == 1 ) {
-				$msg .= "<div class='p_content'>$cont - <a href='$url' target='_blank'>Content match</a></div>";
+				$msg .= "<div class='p_content'>$cont - <a href='$url'>Content match</a></div>";
 			} else {
 				$msg .= "<div class='p_content'>$cont</div>";
 			}
 			if ( $comm_no == 1 ) {
-				$msg .= "<div class='p_comment'>" . $comments . "-<a href='$url' target='_blank'>Comment match</a></div>";
+				$msg .= "<div class='p_comment'>" . $comments . "-<a href='$url'>Comment match</a></div>";
 			}
 			$msg .= "<div class='p_misc'>
                                             By <span class='pauthor'>$auth</span>

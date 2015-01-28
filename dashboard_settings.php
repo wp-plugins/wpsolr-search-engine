@@ -730,7 +730,7 @@ function fun_set_solr_options() {
 										</div>
 										<div class="wdm_note">
 											<h4>Instructions</h4>
-											<ul class="wdm-instructions">
+											<ul class="wdm_ul wdm-instructions">
 												<li>Click on the 'Plus' icon to add the facets</li>
 												<li>Click on the 'Minus' icon to remove the facets</li>
 												<li>Sort the items in the order you want to display them by dragging and
@@ -748,7 +748,7 @@ function fun_set_solr_options() {
 												       value='<?php echo $selected_facets_value ?>'>
 
 
-												<ul id="sortable1" class="connectedSortable">
+												<ul id="sortable1" class="wdm_ul connectedSortable">
 													<?php
 													if ( $selected_facets_value != '' ) {
 														foreach ( $selected_array as $selected_val ) {

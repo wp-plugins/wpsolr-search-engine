@@ -463,7 +463,7 @@
     $.fn.typeahead.defaults = {
         source: [],
         items: 8,
-        menu: '<ul class="typeahead wdm-dropdown-menu"></ul>',
+        menu: '<ul class="wdm_ul typeahead wdm-dropdown-menu"></ul>',
         item: '<li><a href="#"></a></li>',
         displayField: 'name',
         valueField: 'id',

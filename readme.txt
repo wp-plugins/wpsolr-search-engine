@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 1.7
+Current Version: 1.8
 
 Author:  WPSOLR.COM
 
@@ -12,16 +12,17 @@ Tags: Solr in WordPress, relevance, Solr search, fast search, wpsolr, apache sol
 
 Requires at least: 3.7.1
 
-Tested up to: 4.0
+Tested up to: 4.1
 
-Stable tag: 1.7
+Stable tag: 1.8
 
-World class Enterprise Search with facets, autocompletion, suggestions, and optional hosting
+Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
 == Description ==
 
-The core search is performed by SQL queries directly on the database. So are most of the search plugins.
+Replace the standard WP search with a high performance/quality search, performed by the world's leading open source search engine, Apache Solr.
 
+Standard WP search is performed by SQL queries directly on the database. So do most of search plugins.
 But SQL is awfully greedy in computer resources, especially when it comes to table joins and wild cards (select * where field like ‘%keyword%’), which are both heavily used by search.
 And SQL can’t keep well with natural language: synonyms, language specific plurals, stop-words, …
 
@@ -36,17 +37,19 @@ And now, with this plugin, you can get it for free. So, fasten your seat belt, a
 
 = Features =
 
-1. Solr server uses indexing for faster search results.
-2. Text-analysis to break down search phrases, to search entire phrase or individual words.
-3. Advanced faceted search on fields such as tags, categories, author, and page type and custom fields.
-4. Highlighted search words in the text.
-5. Autocomplete suggestions, correct spelling mistakes
-6. Provide a "Did you mean?" query suggestion.
-7. Sorting based on time and number of comments.
-8. Configuration options allow you to select pages to ignore.
-9. Host Solr remotely using gotosolr.
-10. Solr configuration made easy.
-11. Incremental indexing
+1. Benefit from Apache Solr for faster, better search results.
+2. Incremental indexing: only new or updated posts are indexed. Perfect for tens of thousands of posts.
+3. Real-time indexing: as soon as a post is published/unpublished, it is indexed/de-indexed. No outdated results are displayed.
+3. Search in post attachements: pdf, .doc, .xls ...
+4. Text-analysis to break down search phrases, to search entire phrase or individual words.
+5. Advanced faceted search on fields such as tags, categories, author, and page type and custom fields.
+6. Highlighted search words in the text.
+7. Autocomplete suggestions, correct spelling mistakes
+8. Provide a "Did you mean?" query suggestion.
+9. Sorting based on time and number of comments.
+10. Configuration options allow you to select pages to ignore.
+11. Host Solr remotely using gotosolr.
+12. Solr configuration made easy.
 
 For more details visit <a href='http://wpsolr.com'>wpsolr.com</a>
 
@@ -62,6 +65,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 1.8 =
+* Do not open a new page when clicking on a page result line.
 
 = 1.7 =
 * Restart indexing at last document indexed (wether it fell in error, or timeout occured)

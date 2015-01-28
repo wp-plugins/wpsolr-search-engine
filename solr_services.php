@@ -123,7 +123,7 @@ function fun_search_indexed_data() {
 						$groups = '
                                     <div><label class="wdm_label">Filter Results</label>
                                     <input type="hidden" name="sel_fac_field" id="sel_fac_field" value="all" >
-                                    <ul >
+                                    <ul class="wdm_ul">
 				    <li class="select_opt" id="all">ALL</li>
 				    ';
 
@@ -178,7 +178,7 @@ function fun_search_indexed_data() {
 					$number_of_res = $solr_form_options['no_res'];
 					if ( $total > $number_of_res ) {
 						$pages = ceil( $total / $number_of_res );
-						echo '<ul id="pagination-flickr">';
+						echo '<ul id="pagination-flickr" class="wdm_ul">';
 						for ( $k = 1; $k <= $pages; $k ++ ) {
 							echo "<li ><a class='paginate' href='#' id='$k'>$k</a></li>";
 						}
@@ -329,7 +329,7 @@ function return_solr_results() {
 	$paginat_var   = '';
 	if ( $total > $number_of_res ) {
 		$pages = ceil( $total / $number_of_res );
-		$paginat_var .= '<ul id="pagination-flickr">';
+		$paginat_var .= '<ul id="pagination-flickr"class="wdm_ul">';
 		for ( $k = 1; $k <= $pages; $k ++ ) {
 			$paginat_var .= "<li ><a class='paginate' href='#' id='$k'>$k</a></li>";
 		}
