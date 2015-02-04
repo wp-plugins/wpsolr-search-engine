@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 1.8
+Current Version: 1.9
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.1
 
-Stable tag: 1.8
+Stable tag: 1.9
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
@@ -65,6 +65,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 1.9 =
+* Display thumbnail on page result lines.
 
 = 1.8 =
 * Do not open a new page when clicking on a page result line.

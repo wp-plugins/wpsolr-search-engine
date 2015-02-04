@@ -94,7 +94,7 @@ class wp_Solr {
 
 	public function delete_documents() {
 
-		$client      = $this->client;
+		$client = $this->client;
 
 		$deleteQuery = $client->createUpdate();
 		$deleteQuery->addDeleteQuery( '*:*' );
@@ -103,21 +103,49 @@ class wp_Solr {
 		$result = $client->update( $deleteQuery );
 
 		// Store 0 in # of index documents
-		wp_Solr::update_hosting_option( 'solr_docs' , 0);
+		wp_Solr::update_hosting_option( 'solr_docs', 0 );
 
 		// Reset last indexed post date
-		wp_Solr::update_hosting_option( 'solr_last_post_date_indexed' , '1000-01-01 00:00:00' );
+		wp_Solr::update_hosting_option( 'solr_last_post_date_indexed', '1000-01-01 00:00:00' );
 
 		// Update nb of documents updated/added
-		wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation' , -1 );
+		wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation', - 1 );
 
 		return $result->getStatus();
 
 	}
 
-	public function delete_document($post) {
+	public function update_hosting_option( $option, $option_value ) {
 
-		$client      = $this->client;
+		update_option( wp_Solr::get_hosting_postfixed_option( $option ), $option_value );
+	}
+
+	public function get_hosting_postfixed_option( $option ) {
+
+		$result = $option;
+
+		$solr_options = get_option( 'wdm_solr_conf_data' );
+
+		switch ( $solr_options['host_type'] ) {
+			case 'self_hosted':
+				$postfix = '_in_self_index';
+				break;
+
+			default:
+				$postfix = '_in_cloud_index';
+				break;
+		}
+
+		return $result . $postfix;
+	}
+
+	/*
+	 * How many documents were updated/added during last indexing operation
+	 */
+
+	public function delete_document( $post ) {
+
+		$client = $this->client;
 
 		$deleteQuery = $client->createUpdate();
 		$deleteQuery->addDeleteQuery( 'id:' . $post->ID );
@@ -133,32 +161,17 @@ class wp_Solr {
 	public function get_count_documents() {
 		$solr_options = get_option( 'wdm_solr_conf_data' );
 
-		$client      = $this->client;
+		$client = $this->client;
 
 		$query = $client->createSelect();
-		$query->setQuery('*:*');
-		$query->setRows(0);
-		$resultset = $client->select($query);
+		$query->setQuery( '*:*' );
+		$query->setRows( 0 );
+		$resultset = $client->select( $query );
 
 		// Store 0 in # of index documents
-		wp_Solr::update_hosting_option( 'solr_docs' , $resultset->getNumFound() );
+		wp_Solr::update_hosting_option( 'solr_docs', $resultset->getNumFound() );
 
 		return $resultset->getNumFound();
-
-	}
-
-	/*
-	 * How many documents were updated/added during last indexing operation
-	 */
-	public function get_count_documents_indexed_last_operation($default_value = -1) {
-
-		return wp_Solr::get_hosting_option( 'solr_docs_added_or_updated_last_operation' , $default_value );
-
-	}
-
-	public function update_count_documents_indexed_last_operation($count = null) {
-
-		return wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation' , is_null($count) ? -1 : $count );
 
 	}
 
@@ -171,6 +184,27 @@ class wp_Solr {
     * Result[3]= Array of documents
     * Result[4]=Result info
     * */
+
+	public function get_count_documents_indexed_last_operation( $default_value = - 1 ) {
+
+		return wp_Solr::get_hosting_option( 'solr_docs_added_or_updated_last_operation', $default_value );
+
+	}
+
+	public function get_hosting_option( $option, $default_value ) {
+
+		// Get option value. Replace by default value if undefined.
+		$result = get_option( wp_Solr::get_hosting_postfixed_option( $option ), $default_value );
+
+		return $result;
+	}
+
+
+	/*
+	 * Manage options by hosting mode
+	 * Use a dedicated postfix added to the option name.
+	 */
+
 	public function get_search_results( $term, $facet_options, $start, $sort ) {
 
 		$output        = array();
@@ -379,10 +413,11 @@ class wp_Solr {
 		$i       = 1;
 		$cat_arr = array();
 		foreach ( $resultset as $document ) {
-			$id      = $document->id;
-			$pid     = $document->PID;
-			$name    = $document->title;
-			$content = $document->content;
+			$id        = $document->id;
+			$pid       = $document->PID;
+			$name      = $document->title;
+			$content   = $document->content;
+			$image_url = wp_get_attachment_image_src( get_post_thumbnail_id( $id ) );
 
 			$no_comments = $document->numcomments;
 			if ( $field_comment == 1 ) {
@@ -398,7 +433,7 @@ class wp_Solr {
 			$cat  = implode( ',', $cat_arr );
 			$auth = $document->author;
 
-			$cont = substr( $content, 0, 100 );
+			$cont = substr( $content, 0, 200 );
 
 			$url = get_permalink( $id );
 
@@ -426,20 +461,36 @@ class wp_Solr {
 			}
 			$msg = '';
 			$msg .= "<div id='res$i'><div class='p_title'><a href='$url'>$name</a></div>";
-			if ( $cont_no == 1 ) {
-				$msg .= "<div class='p_content'>$cont - <a href='$url'>Content match</a></div>";
+
+			$image_fragment = '';
+			// Display first image
+			if ( is_array( $image_url ) && count( $image_url ) > 0 ) {
+				$image_fragment .= "<img class='wdm_result_list_thumb' src='$image_url[0]' />";
+			}
+
+			// Format content text a little bit
+			$cont = str_replace( '&nbsp;', '', $cont );
+			$cont = str_replace( '  ', ' ', $cont );
+			$cont = ucfirst( trim( $cont ) );
+			$cont .= '...';
+
+			//if ( $cont_no == 1 ) {
+			if ( false ) {
+				$msg .= "<div class='p_content'>$image_fragment $cont - <a href='$url'>Content match</a></div>";
 			} else {
-				$msg .= "<div class='p_content'>$cont</div>";
+				$msg .= "<div class='p_content'>$image_fragment $cont</div>";
 			}
 			if ( $comm_no == 1 ) {
 				$msg .= "<div class='p_comment'>" . $comments . "-<a href='$url'>Comment match</a></div>";
 			}
-			$msg .= "<div class='p_misc'>
-                                            By <span class='pauthor'>$auth</span>
-                                            in <span class='pcat'>$cat</span>
-                                            <span class='pdate'>$date</span>
-                                            <span class='pcat'> $no_comments -comments</span>
-                                            </div></div><hr>";
+
+			$msg .= "<div class='p_misc'>By <span class='pauthor'>$auth</span>";
+			$msg .= empty( $cat ) ? "" : ", in <span class='pcat'>$cat</span>";
+			$msg .= ", on <span class='pdate'>$date</span>";
+			$msg .= empty( $no_comments ) ? "" : ", <span class='pcat'> $no_comments comments</span>";
+			$msg .= "</div></div><hr>";
+
+
 			array_push( $results, $msg );
 			$i = $i + 1;
 		}
@@ -466,6 +517,11 @@ class wp_Solr {
 
 		return $search_result;
 	}
+
+	/*
+	 * Manage options by hosting mode
+	 * Use a dedicated postfix added to the option name.
+	 */
 
 	public function auto_complete_suggestions( $input ) {
 		$res = array();
@@ -498,70 +554,24 @@ class wp_Solr {
 		return $result;
 	}
 
-
 	/*
 	 * Manage options by hosting mode
 	 * Use a dedicated postfix added to the option name.
 	 */
-	public function get_hosting_postfixed_option( $option ) {
 
-		$result  = $option;
-
-		$solr_options = get_option( 'wdm_solr_conf_data' );
-
-		switch ( $solr_options['host_type'] ) {
-			case 'self_hosted':
-				$postfix = '_in_self_index';
-				break;
-
-			default:
-				$postfix = '_in_cloud_index';
-				break;
-		}
-
-		return $result . $postfix;
-	}
-
-	/*
-	 * Manage options by hosting mode
-	 * Use a dedicated postfix added to the option name.
-	 */
-	public function get_hosting_option( $option , $default_value) {
-
-		// Get option value. Replace by default value if undefined.
-		$result = get_option( wp_Solr::get_hosting_postfixed_option( $option ) , $default_value);
-
-		return $result;
-	}
-
-	/*
-	 * Manage options by hosting mode
-	 * Use a dedicated postfix added to the option name.
-	 */
-	public function update_hosting_option( $option , $option_value) {
-
-		update_option( wp_Solr::get_hosting_postfixed_option( $option ), $option_value);
-	}
-
-
-	/*
-	 * Fetch posts and attachments,
-	 * Transorm them in Solr documents,
-	 * Send them in packs to Solr
-	 */
-	public function index_data($post = null) {
+	public function index_data( $post = null ) {
 
 		global $wpdb;
 
 		// Last post date set in previous call. We begin with posts published after.
-		$lastPostDate = wp_Solr::get_hosting_option( 'solr_last_post_date_indexed' , '1000-01-01 00:00:00' );
+		$lastPostDate = wp_Solr::get_hosting_option( 'solr_last_post_date_indexed', '1000-01-01 00:00:00' );
 
 		// Reset last operation result
-		wp_Solr::update_count_documents_indexed_last_operation(0);
+		wp_Solr::update_count_documents_indexed_last_operation( 0 );
 
 		$batch_size = 100;
-		$res_final = 0;
-		$cnt       = 0;
+		$res_final  = 0;
+		$cnt        = 0;
 
 		$tbl   = $wpdb->prefix . 'posts';
 		$where = '';
@@ -610,7 +620,7 @@ class wp_Solr {
 		$query .= " FROM $tbl ";
 		$query .= " WHERE ";
 		$query .= " post_modified > %s ";
-		if (isset($post)) {
+		if ( isset( $post ) ) {
 			// Add condition on the $post
 			$query .= " AND ID = %d";
 		}
@@ -619,11 +629,12 @@ class wp_Solr {
 		$query .= " LIMIT $batch_size ";
 
 		$documents = array();
+		$doc_count = 0;
 		while ( true ) {
 
 			// Execute query (retrieve posts IDs, parents and types)
-			if (isset($post)) {
-				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate , $post->ID ), ARRAY_A );
+			if ( isset( $post ) ) {
+				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate, $post->ID ), ARRAY_A );
 			} else {
 				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate ), ARRAY_A );
 			}
@@ -681,7 +692,7 @@ class wp_Solr {
 			$res_final = wp_Solr::send_posts_or_attachments_to_solr_index( $updateQuery, $documents );
 
 			// Solr error, or only $post to index: exit loop
-			if ( ( ! $res_final ) OR isset($post) ) {
+			if ( ( ! $res_final ) OR isset( $post ) ) {
 				break;
 			}
 
@@ -689,7 +700,7 @@ class wp_Solr {
 			$documents = array();
 
 			// Store last post date sent to Solr
-			wp_Solr::update_hosting_option( 'solr_last_post_date_indexed' , $lastPostDate );
+			wp_Solr::update_hosting_option( 'solr_last_post_date_indexed', $lastPostDate );
 
 			// Update nb of documents updated/added
 			wp_Solr::update_count_documents_indexed_last_operation( $doc_count );
@@ -697,6 +708,19 @@ class wp_Solr {
 		}
 
 		return $res_final;
+
+	}
+
+
+	/*
+	 * Fetch posts and attachments,
+	 * Transorm them in Solr documents,
+	 * Send them in packs to Solr
+	 */
+
+	public function update_count_documents_indexed_last_operation( $count = null ) {
+
+		return wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation', is_null( $count ) ? - 1 : $count );
 
 	}
 
