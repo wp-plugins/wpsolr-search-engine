@@ -111,6 +111,10 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 == Frequently Asked Questions ==
 
+= How do I setup the integration with the Groups plugin ? =
+
+Go to the WPSOLR tab "Solr Options -> Groups plugin options", and follow the instructions. Quite straightforward.
+
 = How do I install and configure Solr? =
 
 Please refer to our detailed <a href='http://wpsolr.com/installation-guide/'>Installation Guide</a>.
