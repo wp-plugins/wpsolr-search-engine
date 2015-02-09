@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Enterprise search in seconds
  * Description: Apache Solr search with facets, autocompletion, and suggestions. Ready in seconds with optional hosting.
- * Version: 1.9
+ * Version: 2.0
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -32,7 +32,7 @@ function add_remove_document_to_solr_index( $new_status, $old_status, $post ) {
 
 	if ( $old_status == 'publish'  &&  $new_status != 'publish' ) {
 		// post unpublished, remove it from Solr index
-		$solr = new wp_Solr();
+		$solr = new WpSolr();
 
 		$solr->delete_document($post);
 	}

@@ -94,7 +94,16 @@ function fun_search_indexed_data() {
 		$options = $fac_opt['facets'];
 		if ( $res == 0 ) {
 
-			$final_result = $solr->get_search_results( $search_que, '', '', '', '' );
+			try {
+
+				$final_result = $solr->get_search_results( $search_que, '', '', '', '' );
+			}
+			catch ( Exception $e ) {
+
+				$message = $e->getMessage();
+				echo "<span class='infor'>$message</span>";
+				die();
+			}
 
 			if ( $final_result[2] == 0 ) {
 				echo "<span class='infor'>No results found for $search_que</span>";
@@ -219,10 +228,10 @@ function return_solr_instance() {
 			"endpoint" =>
 				array(
 					"localhost" => array(
-						'scheme'   => $protocol,
-						"host" => $host,
-						"port" => $port,
-						"path" => $spath
+						'scheme' => $protocol,
+						"host"   => $host,
+						"port"   => $port,
+						"path"   => $spath
 					)
 				)
 		);
@@ -252,12 +261,12 @@ function return_solr_instance() {
 
 	} catch ( Exception $e ) {
 
-		$str_err = "";
-		$solrCode = $e->getCode();
+		$str_err     = "";
+		$solrCode    = $e->getCode();
 		$solrMessage = $e->getMessage();
 
 		// 401: authentification
-		switch ($e->getCode()) {
+		switch ( $e->getCode() ) {
 
 			case 401:
 				$str_err .= "<br /><span>The server authentification failed. Please check your user/password (Solr code http $solrCode)</span><br />";
@@ -280,6 +289,7 @@ function return_solr_instance() {
 
 
 		echo $str_err;
+
 		return;
 
 	}
@@ -291,7 +301,7 @@ add_action( 'wp_ajax_nopriv_return_solr_instance', 'return_solr_instance' );
 add_action( 'wp_ajax_return_solr_instance', 'return_solr_instance' );
 function return_solr_status() {
 
-	$solr = new wp_Solr();
+	$solr = new WpSolr();
 	echo $words = $solr->get_solr_status();
 
 }
@@ -308,7 +318,7 @@ function return_solr_results() {
 	$sort  = $_POST['sort_opt'];
 
 
-	$solr          = new wp_Solr();
+	$solr          = new WpSolr();
 	$final_result  = $solr->get_search_results( $query, $opt, $num, $sort );
 	$solr_options  = get_option( 'wdm_solr_conf_data' );
 	$output        = array();

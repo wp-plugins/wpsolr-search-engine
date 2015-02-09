@@ -1,12 +1,21 @@
 <?php
 
+require_once plugin_dir_path( __FILE__ ) . 'classes/extensions/wpsolr-extensions.php';
+
 class wp_Solr {
 
 	public $client;
 	public $select_query;
 	protected $config;
 
+	// Array of active extension objects
+	protected $wpsolr_extensions;
+
 	public function __construct() {
+
+		// Load active extensions
+		$this->wpsolr_extensions = new WpSolrExtensions();
+
 
 		$path = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 		require_once $path;
@@ -228,39 +237,34 @@ class wp_Solr {
 		$term   = str_replace( ' ', '\ ', $term );
 
 		$query = $client->createSelect();
-		//$helper = $query->getHelper();
+
 		$query->setQuery( $term );
-		$query->setFields( array(
-			'id',
-			'title',
-			'content',
-			'author',
-			'displaydate',
-			'categories',
-			'numcomments',
-			'comments',
-			'type',
-			'permalink'
-		) );
-		if ( $sort != null ) {
-			if ( $sort == 'new' ) {
-				$sort_field = 'date';
-				$sort_value = $query::SORT_DESC;
-			} else if ( $sort == 'old' ) {
-				$sort_field = 'date';
-				$sort_value = $query::SORT_ASC;
-			} else if ( $sort == 'mcomm' ) {
-				$sort_field = 'numcomments';
-				$sort_value = $query::SORT_DESC;
-			} else if ( $sort == 'lcomm' ) {
-				$sort_field = 'numcomments';
-				$sort_value = $query::SORT_ASC;
-			}
+
+		// Add extensions query filters
+		do_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, get_current_user_id(), $query );
 
 
-		} else {
-			$sort_field = 'id';
-			$sort_value = $query::SORT_DESC;
+		switch ( $sort ) {
+			case 'new':
+				$sort_field = 'date';
+				$sort_value = $query::SORT_DESC;
+				break;
+			case 'old':
+				$sort_field = 'date';
+				$sort_value = $query::SORT_ASC;
+				break;
+			case 'mcomm';
+				$sort_field = 'numcomments';
+				$sort_value = $query::SORT_DESC;
+				break;
+			case 'lcomm':
+				$sort_field = 'numcomments';
+				$sort_value = $query::SORT_ASC;
+				break;
+			default:
+				$sort_field = 'id';
+				$sort_value = $query::SORT_DESC;
+				break;
 		}
 
 		$query->addSort( $sort_field, $sort_value );
@@ -484,12 +488,27 @@ class wp_Solr {
 				$msg .= "<div class='p_comment'>" . $comments . "-<a href='$url'>Comment match</a></div>";
 			}
 
+			// Groups bloc - Bottom right
+			$wpsolr_groups_message = apply_filters( WpSolrExtensions::FILTER_SOLR_DOCUMENT_ADD_GROUPS, get_current_user_id(), $document );
+			if ( isset( $wpsolr_groups_message ) ) {
+
+				// Display groups of this user which owns at least one the document capability
+				$message = $wpsolr_groups_message['message'];
+				$msg .= "<div class='p_misc'>$message";
+				$msg .= "</div>";
+				$msg .= '<br/>';
+
+			}
+
+			// Informative bloc - Bottom right
 			$msg .= "<div class='p_misc'>By <span class='pauthor'>$auth</span>";
 			$msg .= empty( $cat ) ? "" : ", in <span class='pcat'>$cat</span>";
 			$msg .= ", on <span class='pdate'>$date</span>";
 			$msg .= empty( $no_comments ) ? "" : ", <span class='pcat'> $no_comments comments</span>";
-			$msg .= "</div></div><hr>";
+			$msg .= "</div>";
 
+			// End of snippet bloc
+			$msg .= "</div><hr>";
 
 			array_push( $results, $msg );
 			$i = $i + 1;
@@ -847,14 +866,14 @@ class wp_Solr {
 					if ( isset( $custom_fields[ $field_name ] ) ) {
 						$field = (array) $custom_fields[ $field_name ];
 
-
 						$field_name = strtolower( str_replace( ' ', '_', $field_name ) );
-						foreach ( $field as $key => $value ) {
-							$nm1        = $field_name . '_str';
-							$nm2        = $field_name . '_srch';
-							$doc1->$nm1 = $value;
-							$doc1->$nm2 = $value;
-						}
+
+						// Add custom field array of values
+						$nm1        = $field_name . '_str';
+						$nm2        = $field_name . '_srch';
+						$doc1->$nm1 = $field;
+						$doc1->$nm2 = $field;
+
 					}
 				}
 			}
@@ -867,21 +886,21 @@ class wp_Solr {
 	public function get_attachment_body( $extractQuery, $post ) {
 		$solr_options = get_option( 'wdm_solr_conf_data' );
 
-		// Set URL to attachment
-		$extractQuery->setFile( preg_replace( '~^http(s)?://' . $_SERVER['SERVER_NAME'] . '~i', $_SERVER['DOCUMENT_ROOT'], get_the_guid( $post->ID ) ) );
-		$doc1 = $extractQuery->createDocument();
-		$extractQuery->setDocument( $doc1 );
-		// We don't want to add the document to the solr index now
-		$extractQuery->addParam( 'extractOnly', 'true' );
-		// Try to extract the document body
 		try {
+			// Set URL to attachment
+			$extractQuery->setFile( get_attached_file( $post->ID ) );
+			$doc1 = $extractQuery->createDocument();
+			$extractQuery->setDocument( $doc1 );
+			// We don't want to add the document to the solr index now
+			$extractQuery->addParam( 'extractOnly', 'true' );
+			// Try to extract the document body
 			$client   = $this->client;
 			$result   = $client->extract( $extractQuery );
 			$response = $result->getResponse()->getBody();
 			$body     = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
 			$body     = str_replace( '\n', ' ', $body );
 		} catch ( Exception $e ) {
-			$body = '';
+			throw new Exception( 'Error on attached file "' . $post->post_title . '": <br/>' . $e->getMessage() );
 		}
 
 		return $body;

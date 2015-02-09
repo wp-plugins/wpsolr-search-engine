@@ -60,6 +60,9 @@ input[type=radio]:checked:before{
 input[type=checkbox]:checked:before{
 	color:#C15F03!important;
 }
+input[type=text]{
+	width:300px;
+}
 .wdm_heading{
 	color:#C15F03;
 	background:#fff;

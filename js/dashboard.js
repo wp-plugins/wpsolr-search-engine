@@ -87,6 +87,11 @@ jQuery(document).ready(function () {
         if (err == 0)
             return false;
     })
+    jQuery('#save_selected_extension_groups_form').click(function () {
+        err = 1;
+        if (err == 0)
+            return false;
+    })
     jQuery('#check_solr_status').click(function () {
         path = jQuery('#adm_path').val();
 
