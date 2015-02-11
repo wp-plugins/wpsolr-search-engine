@@ -667,7 +667,9 @@ class wp_Solr {
 			}
 
 
-			$lastPostDate = end( $ids_array )['post_modified'];
+			// In 2 steps to be valid in PHP 5.3
+			$lastPost = end( $ids_array );
+			$lastPostDate = $lastPost['post_modified'];
 
 			// Get the ID of every published post
 			// We need these to be able to check whether a parent post of an attachment has been published

@@ -19,7 +19,7 @@ function add_scripts() {
 
 function fun_search_indexed_data() {
 	if ( session_id() == '' ) {
-		session_start();
+		//session_start();
 	}
 
 

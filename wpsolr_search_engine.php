@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Enterprise search in seconds
  * Description: Apache Solr search with facets, autocompletion, and suggestions. Ready in seconds with optional hosting.
- * Version: 2.0
+ * Version: 2.1
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -120,7 +120,7 @@ function curl_dependency_check() {
 function solr_search_form( $form ) {
 
 	if ( session_id() == '' ) {
-		session_start();
+		//session_start();
 	}
 
 	ob_start();

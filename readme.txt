@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.0
+Current Version: 2.1
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.1
 
-Stable tag: 2.0
+Stable tag: 2.1
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
@@ -68,6 +68,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 == Changelog ==
 
+= 2.1 =
+* Fix a PHP version bug: installation failed with PHP <= 5.3.
+
 = 2.0 =
 * Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
 * Stop the indexing process when attacements fail, and display the attachment name in error. Can be related to php security.
@@ -110,10 +113,6 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Frequently Asked Questions ==
-
-= How do I setup the integration with the Groups plugin ? =
-
-Go to the WPSOLR tab "Solr Options -> Groups plugin options", and follow the instructions. Quite straightforward.
 
 = How do I install and configure Solr? =
 
