@@ -27,12 +27,12 @@ class WpSolrGroups extends WpSolrExtensions {
 
 		$this->_extension_groups_options = $this->get_option_data( self::EXTENSION_GROUPS );
 
-		add_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, [ $this, 'set_custom_query' ], 10, 2 );
+		add_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, array( $this, 'set_custom_query' ), 10, 2 );
 
-		add_filter( WpSolrExtensions::FILTER_SOLR_DOCUMENT_ADD_GROUPS, [
+		add_filter( WpSolrExtensions::FILTER_SOLR_DOCUMENT_ADD_GROUPS, array(
 			$this,
 			'get_groups_of_user_document'
-		], 10, 2 );
+		), 10, 2 );
 
 	}
 
@@ -72,7 +72,8 @@ class WpSolrGroups extends WpSolrExtensions {
 	static function get_custom_field_capabilities() {
 
 		// Get custom fields selected for indexing
-		$array_cust_fields = explode( ',', get_option( 'wdm_solr_form_data' )['cust_fields'] );
+		$array_options = get_option( 'wdm_solr_form_data' );
+		$array_cust_fields = explode( ',', $array_options['cust_fields'] );
 
 		if ( ! is_array( $array_cust_fields ) ) {
 			return false;
@@ -95,7 +96,8 @@ class WpSolrGroups extends WpSolrExtensions {
 		$is_result_without_capabilities_seen_by_all_users = $this->_extension_groups_options['is_result_without_capabilities_seen_by_all_users'];
 
 		// Get custom fields selected for indexing
-		$array_cust_fields = explode( ',', get_option( 'wdm_solr_form_data' )['cust_fields'] );
+		$array_options = get_option( 'wdm_solr_form_data' );
+		$array_cust_fields = explode( ',', $array_options['cust_fields'] );
 
 		// Is the custom field used by Groups plugin to store posts capabilities indexed ?
 		if ( false !== array_search( self::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES, $array_cust_fields ) ) {
@@ -164,7 +166,7 @@ class WpSolrGroups extends WpSolrExtensions {
 			return $this->_user_capabilities_groups;
 		}
 
-		$user_capabilities = [ ];
+		$user_capabilities = array();
 
 		// Fetch current user's groups
 		$groups_user = new Groups_User( $user_id );
@@ -192,10 +194,10 @@ class WpSolrGroups extends WpSolrExtensions {
 
 				if ( isset( $capability ) && isset( $capability->capability ) ) {
 
-					$user_capabilities[] = [
+					$user_capabilities[] = array(
 						'capability' => $capability->capability->capability,
 						'group'      => $group->name
-					];
+					);
 
 				}
 			}
@@ -235,7 +237,7 @@ class WpSolrGroups extends WpSolrExtensions {
 	 */
 	public function get_groups_of_user_document( $user_id, $document ) {
 
-		$wpsolr_groups_array = [ ];
+		$wpsolr_groups_array = array();
 
 		$document_capabilities_array = $document[ self::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES ];
 		if ( is_array( $document_capabilities_array ) && ( count( $document_capabilities_array ) > 0 ) ) {
@@ -265,7 +267,7 @@ class WpSolrGroups extends WpSolrExtensions {
 		// Get values from associative
 		$wpsolr_groups_array = array_values( $wpsolr_groups_array );
 
-		return [ 'groups' => $wpsolr_groups_array, 'message' => $message ];
+		return array( 'groups' => $wpsolr_groups_array, 'message' => $message );
 
 	}
 

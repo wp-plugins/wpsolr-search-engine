@@ -19,7 +19,7 @@ function add_scripts() {
 
 function fun_search_indexed_data() {
 	if ( session_id() == '' ) {
-		//session_start();
+		session_start();
 	}
 
 
@@ -301,7 +301,7 @@ add_action( 'wp_ajax_nopriv_return_solr_instance', 'return_solr_instance' );
 add_action( 'wp_ajax_return_solr_instance', 'return_solr_instance' );
 function return_solr_status() {
 
-	$solr = new WpSolr();
+	$solr = new wp_Solr();
 	echo $words = $solr->get_solr_status();
 
 }
@@ -318,7 +318,7 @@ function return_solr_results() {
 	$sort  = $_POST['sort_opt'];
 
 
-	$solr          = new WpSolr();
+	$solr          = new wp_Solr();
 	$final_result  = $solr->get_search_results( $query, $opt, $num, $sort );
 	$solr_options  = get_option( 'wdm_solr_conf_data' );
 	$output        = array();

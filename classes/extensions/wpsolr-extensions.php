@@ -35,23 +35,23 @@ class WpSolrExtensions {
 	/*
 	 * Extensions configuration
 	 */
-	private static $extensions_array = [
+	private static $extensions_array = array(
 		self::EXTENSION_GROUPS =>
-			[
+			array(
 				self::_CONFIG_EXTENSION_CLASS_NAME => 'WpSolrGroups',
 				self::_CONFIG_PLUGIN_CLASS_NAME    => 'Groups_WordPress',
 				self::_CONFIG_EXTENSION_FILE_PATH  => 'groups/wpsolr-groups.php',
-				self::_CONFIG_OPTIONS              => [
+				self::_CONFIG_OPTIONS              => array(
 					self::_CONFIG_OPTIONS_DATA                 => 'wdm_solr_extension_groups_data',
 					self::_CONFIG_OPTIONS_IS_ACTIVE_FIELD_NAME => 'is_extension_active'
-				]
-			]
-	];
+				)
+			)
+	);
 
 	/*
 	 * Array of active extension objects
 	 */
-	private $extension_objects = [ ];
+	private $extension_objects = array();
 
 	/**
 	 * Constructor.
@@ -70,7 +70,7 @@ class WpSolrExtensions {
 	 */
 	private function instantiate_active_extension_objects() {
 
-		$extension_objects = [ ];
+		$extension_objects = array();
 
 		foreach ( $this->get_extensions_active() as $extension_class_name ) {
 
@@ -86,7 +86,7 @@ class WpSolrExtensions {
 	 * @return array[string]
 	 */
 	public function get_extensions_active() {
-		$results = [ ];
+		$results = array();
 
 		foreach ( self::$extensions_array as $key => $class ) {
 

@@ -812,6 +812,7 @@ function fun_set_solr_options() {
 
 							WpSolrGroups::update_custom_field_capabilities();
 
+							$array_extension_options = get_option( 'wdm_solr_extension_groups_data' );
 							$is_plugin_active                    = WpSolrExtensions::is_plugin_active(WpSolrExtensions::EXTENSION_GROUPS);
 							$is_plugin_custom_field_for_indexing = WpSolrGroups::get_custom_field_capabilities();
 							$custom_field_for_indexing_name = WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES
@@ -858,7 +859,7 @@ function fun_set_solr_options() {
 													is activated. You can now configure WPSOLR to use it.
 												</p>
 											<?php endif; ?>
-											<?php if ( ( ! $is_plugin_custom_field_for_indexing ) && ( isset( get_option( wdm_solr_extension_groups_data )[ is_extension_active ] ) ) ): ?>
+											<?php if ( ( ! $is_plugin_custom_field_for_indexing ) && ( isset( $array_extension_options[ 'is_extension_active' ] ) ) ): ?>
 												<p>
 													The custom field <b>'<?php echo $custom_field_for_indexing_name ?>
 														'</b>
