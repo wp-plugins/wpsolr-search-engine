@@ -69,7 +69,7 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 == Changelog ==
 
 = 2.1 =
-* Fix a PHP version bug: installation failed with PHP <= 5.3.
+* Installation failed with PHP <= 5.3: fixed.
 
 = 2.0 =
 * Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
