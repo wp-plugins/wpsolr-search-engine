@@ -668,7 +668,7 @@ class wp_Solr {
 
 
 			// In 2 steps to be valid in PHP 5.3
-			$lastPost = end( $ids_array );
+			$lastPost     = end( $ids_array );
 			$lastPostDate = $lastPost['post_modified'];
 
 			// Get the ID of every published post
@@ -783,16 +783,31 @@ class wp_Solr {
 		$pcomments    = $comments_con;
 		$pnumcomments = $numcomments;
 
-		$cats       = array();
-		$categories = get_the_category( $post->ID );
-		if ( ! $categories == null ) {
-			foreach ( $categories as $category ) {
-				array_push( $cats, $category->cat_name );
 
+		/*
+			Get all custom categories selected for indexing, including 'category'
+		*/
+		$cats = array();
+		$taxo        = $opt['taxonomies'];
+		$aTaxo       = explode( ',', $taxo );
+		$newTax      = array( 'category' );
+		foreach ( $aTaxo as $a ) {
+			if ( substr( $a, ( strlen( $a ) - 4 ), strlen( $a ) ) == "_str" ) {
+				$a = substr( $a, 0, ( strlen( $a ) - 4 ) );
+			}
+			array_push( $newTax, $a );
 
+		}
+
+		// Get all taxonomy terms ot this post
+		$term_names = wp_get_post_terms( $post->ID, $newTax, array( "fields" => "names" ) );
+		if ( $term_names && ! is_wp_error($term_names) ) {
+			foreach ( $term_names as $term_name ) {
+				array_push( $cats, $term_name );
 			}
 		}
 
+		// Get all tags of this port
 		$tag_array = array();
 		$tags      = get_the_tags( $post->ID );
 		if ( ! $tags == null ) {
@@ -827,18 +842,6 @@ class wp_Solr {
 		$doc1->categories  = $cats;
 
 		$doc1->tags = $tag_array;
-
-		$custom_taxo = array();
-		$taxo        = $opt['taxonomies'];
-		$aTaxo       = explode( ',', $taxo );
-		$newTax      = array();
-		foreach ( $aTaxo as $a ) {
-			if ( substr( $a, ( strlen( $a ) - 4 ), strlen( $a ) ) == "_str" ) {
-				$a = substr( $a, 0, ( strlen( $a ) - 4 ) );
-			}
-			array_push( $newTax, $a );
-
-		}
 
 		$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
 		foreach ( $taxonomies as $parent ) {

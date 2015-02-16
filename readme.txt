@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.1
+Current Version: 2.2
 
 Author:  WPSOLR.COM
 
@@ -14,13 +14,14 @@ Requires at least: 3.7.1
 
 Tested up to: 4.1
 
-Stable tag: 2.1
+Stable tag: 2.2
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
 == Description ==
 
-New - Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
+New ! <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCommerce</a>:  product taxonomies (product_cat , product_tag) are now searchable.
+New ! Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
 
 Replace the standard WP search with a high performance/quality search, performed by the world's leading open source search engine, Apache Solr.
 
@@ -67,6 +68,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 2.2 =
+* Fix custom taxonomies to be searchable (they used to be displayed in facets only). As a side effect, <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCommerce</a> product taxonomies (product_cat , product_tag) are now searchable.
 
 = 2.1 =
 * Installation failed with PHP <= 5.3: fixed.
