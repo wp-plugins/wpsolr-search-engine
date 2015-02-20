@@ -241,7 +241,7 @@ class wp_Solr {
 		$query->setQuery( $term );
 
 		// Add extensions query filters
-		do_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, get_current_user_id(), $query );
+		do_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, wp_get_current_user(), $query );
 
 
 		switch ( $sort ) {
@@ -787,10 +787,10 @@ class wp_Solr {
 		/*
 			Get all custom categories selected for indexing, including 'category'
 		*/
-		$cats = array();
-		$taxo        = $opt['taxonomies'];
-		$aTaxo       = explode( ',', $taxo );
-		$newTax      = array( 'category' );
+		$cats   = array();
+		$taxo   = $opt['taxonomies'];
+		$aTaxo  = explode( ',', $taxo );
+		$newTax = array( 'category' );
 		foreach ( $aTaxo as $a ) {
 			if ( substr( $a, ( strlen( $a ) - 4 ), strlen( $a ) ) == "_str" ) {
 				$a = substr( $a, 0, ( strlen( $a ) - 4 ) );
@@ -801,7 +801,7 @@ class wp_Solr {
 
 		// Get all taxonomy terms ot this post
 		$term_names = wp_get_post_terms( $post->ID, $newTax, array( "fields" => "names" ) );
-		if ( $term_names && ! is_wp_error($term_names) ) {
+		if ( $term_names && ! is_wp_error( $term_names ) ) {
 			foreach ( $term_names as $term_name ) {
 				array_push( $cats, $term_name );
 			}
@@ -859,11 +859,14 @@ class wp_Solr {
 			}
 		}
 
-
 		$custom  = $opt['cust_fields'];
 		$aCustom = explode( ',', $custom );
 		if ( count( $aCustom ) > 0 ) {
 			if ( count( $custom_fields = get_post_custom( $post->ID ) ) ) {
+
+				// Apply filters on custom fields
+				$custom_fields = apply_filters( WpSolrExtensions::FILTER_SOLR_DOCUMENT_CUSTOM_FIELD, $post->ID, $custom_fields );
+
 				foreach ( (array) $aCustom as $field_name ) {
 					if ( substr( $field_name, ( strlen( $field_name ) - 4 ), strlen( $field_name ) ) == "_str" ) {
 						$field_name = substr( $field_name, 0, ( strlen( $field_name ) - 4 ) );

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Enterprise search in seconds
  * Description: Apache Solr search with facets, autocompletion, and suggestions. Ready in seconds with optional hosting.
- * Version: 2.2
+ * Version: 2.3
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -27,26 +27,31 @@ add_action( 'admin_init', 'func_reg_solr_form_setting' );
 
 /*
  * Add/remove document to/from Solr index when status changes to/from published
+ * We have to use action 'save_post', as it is used by other plugins to trigger meta boxes save
  */
-function add_remove_document_to_solr_index( $new_status, $old_status, $post ) {
+function add_remove_document_to_solr_index( $post_id, $post, $update ) {
 
-	if ( $old_status == 'publish'  &&  $new_status != 'publish' ) {
-		// post unpublished, remove it from Solr index
-		$solr = new wp_Solr();
+	// If this is just a revision, don't go on.
+	if ( wp_is_post_revision( $post_id ) )
+		return;
 
-		$solr->delete_document($post);
-	}
-
-	if ( $new_status == 'publish') {
+	if ( 'publish' == $post->post_status ) {
 		// post published, add/update it from Solr index
 
 		$solr = new wp_Solr();
 
-		$solr->index_data($post);
+		$solr->index_data( $post );
+
+	} else {
+		// post unpublished, remove it from Solr index
+		$solr = new wp_Solr();
+
+		$solr->delete_document( $post );
 	}
 
 }
-add_action(  'transition_post_status',  'add_remove_document_to_solr_index', 10, 3 );
+
+add_action( 'save_post', 'add_remove_document_to_solr_index', 10, 3 );
 
 /* Replace WordPress search
  * Default WordPress will be replaced with Solr search
@@ -117,7 +122,7 @@ function curl_dependency_check() {
 }
 
 
-function solr_search_form( ) {
+function solr_search_form() {
 
 	if ( session_id() == '' ) {
 		session_start();
@@ -135,18 +140,18 @@ function solr_search_form( ) {
 	$solr_options = get_option( 'wdm_solr_conf_data' );
 
 	if ( $solr_options['host_type'] == 'self_hosted' ) {
-		$_SESSION['wdm-host']         = $solr_options['solr_host'];
-		$_SESSION['wdm-port']         = $solr_options['solr_port'];
-		$_SESSION['wdm-path']         = $solr_options['solr_path'];
+		$_SESSION['wdm-host'] = $solr_options['solr_host'];
+		$_SESSION['wdm-port'] = $solr_options['solr_port'];
+		$_SESSION['wdm-path'] = $solr_options['solr_path'];
 
 	} else {
 		//$wdm_typehead_request_handler = 'wdm_return_goto_solr_rows';
-		$_SESSION['wdm-ghost']        = $solr_options['solr_host_goto'];
-		$_SESSION['wdm-gport']        = $solr_options['solr_port_goto'];
-		$_SESSION['wdm-gpath']        = $solr_options['solr_path_goto'];
-		$_SESSION['wdm-guser']        = $solr_options['solr_key_goto'];
-		$_SESSION['wdm-gpwd']         = $solr_options['solr_secret_goto'];
-		$_SESSION['wdm-gproto']       = $solr_options['solr_protocol_goto'];
+		$_SESSION['wdm-ghost']  = $solr_options['solr_host_goto'];
+		$_SESSION['wdm-gport']  = $solr_options['solr_port_goto'];
+		$_SESSION['wdm-gpath']  = $solr_options['solr_path_goto'];
+		$_SESSION['wdm-guser']  = $solr_options['solr_key_goto'];
+		$_SESSION['wdm-gpwd']   = $solr_options['solr_secret_goto'];
+		$_SESSION['wdm-gproto'] = $solr_options['solr_protocol_goto'];
 
 	}
 
