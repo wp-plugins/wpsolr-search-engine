@@ -1,3 +1,6 @@
+// Timout handler on the indexing process
+var timeoutHandler;
+
 jQuery(document).ready(function () {
     jQuery(".radio_type").change(function () {
 
@@ -13,16 +16,121 @@ jQuery(document).ready(function () {
         }
     });
 
-    jQuery('#solr_index_data').click(function () {
+    // Clean the Solr index
+    jQuery('#solr_delete_index').click(function () {
 
-        jQuery('.status_index_message').addClass('loading');
+        jQuery('.status_del_message').addClass('loading');
+
+        path = jQuery('#adm_path').val();
+
+        jQuery.ajax({
+            url: path + 'admin-ajax.php',
+            type: "post",
+            data: {
+                action: 'return_solr_delete_index'
+            },
+            timeout: 1000 * 3600 * 24,
+            success: function (data1) {
+            },
+            error: function (req, status, error) {
+            }
+        });
+
     });
 
-    jQuery('#solr_delete_index').click(function () {
-            jQuery('.status_del_message').addClass('loading');
+    // Stop the current Solr index process
+    jQuery('#solr_stop_index_data').click(function () {
 
+        jQuery('#solr_stop_index_data').attr('value', 'Stopping ... please wait');
+        clearTimeout(timeoutHandler)
+
+    });
+
+    // Fill the Solr index
+    jQuery('#solr_start_index_data').click(function () {
+
+        jQuery('.status_index_icon').addClass('loading');
+
+        jQuery('#solr_stop_index_data').css('visibility', 'visible');
+        jQuery('#solr_start_index_data').hide();
+        jQuery('#solr_delete_index').hide();
+
+        batch_size = jQuery('#batch_size').val();
+        err = 1;
+
+        if (isNaN(batch_size) || (batch_size < 1)) {
+            jQuery('.res_err').text("Please enter a number > 0");
+            err = 0;
         }
-    );
+        else {
+            jQuery('.res_err').text();
+        }
+
+        if (err == 0) {
+            return false;
+        } else {
+
+            call_solr_index_data(batch_size, 0);
+
+            // Block submit
+            return false;
+        }
+
+    });
+
+
+    // Promise to the Ajax call
+    function call_solr_index_data(batch_size, nb_results) {
+
+        var nb_results_message = nb_results + ' documents indexed so far'
+
+        jQuery('.status_index_message').html(nb_results_message);
+
+        path = jQuery('#adm_path').val();
+
+        return jQuery.ajax({
+            url: path + 'admin-ajax.php',
+            type: "post",
+            data: {
+                action: 'return_solr_index_data',
+                'batch_size': batch_size,
+                'nb_results': nb_results
+            },
+            dataType: "json",
+            timeout: 1000 * 3600 * 24,
+
+            success: function (data) {
+
+                // Errors
+                if (data.status != 0) {
+                    jQuery('.status_index_message').html('An error occured: <br>' + data.message);
+                }
+                // If indexing completed, stop. Else, call once more.
+                else if (!data.indexing_complete) {
+                    timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results), 100);
+                } else {
+                    jQuery('#solr_stop_index_data').click();
+                }
+            },
+            error: function (req, status, error) {
+
+                var message = ''
+                if (batch_size > 100) {
+                    message = '<br> You could try to decrease your batch size to prevent errors or timeouts.';
+                }
+                jQuery('.status_index_message').html('An error or timeout occured: <br>' + error + '(error code: ' + status + ')' + message);
+
+            },
+            timeout: function (req, status, error) {
+                jQuery('.status_index_message').html('A timeout occured');
+
+                //timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results), 100);
+            }
+        });
+
+    }
+
+
     jQuery('#save_selected_index_options_form').click(function () {
         ps_types = '';
         tax = '';
@@ -92,6 +200,7 @@ jQuery(document).ready(function () {
         if (err == 0)
             return false;
     })
+
     jQuery('#check_solr_status').click(function () {
         path = jQuery('#adm_path').val();
 
@@ -141,7 +250,13 @@ jQuery(document).ready(function () {
                 url: path + 'admin-ajax.php',
                 type: "post",
                 timeout: 10000,
-                data: {action: 'return_solr_instance', 'sproto' : protocol,'shost': host, 'sport': port, 'spath': spath},
+                data: {
+                    action: 'return_solr_instance',
+                    'sproto': protocol,
+                    'shost': host,
+                    'sport': port,
+                    'spath': spath
+                },
                 success: function (data1) {
 
                     jQuery('.img-load').css('display', 'none');
@@ -156,7 +271,7 @@ jQuery(document).ready(function () {
                         jQuery('.solr_error').html(data1);
 
                 },
-                error: function(req, status, error) {
+                error: function (req, status, error) {
 
                     jQuery('.img-load').css('display', 'none');
 
@@ -248,7 +363,7 @@ jQuery(document).ready(function () {
                         jQuery('.solr_error').html(data1);
 
                 },
-                error: function(req, status, error) {
+                error: function (req, status, error) {
 
                     jQuery('.img-load').css('display', 'none');
 

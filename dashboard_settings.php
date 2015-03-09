@@ -6,6 +6,7 @@ function func_reg_solr_form_setting() {
 	register_setting( 'solr_facet_options', 'wdm_solr_facet_data' );
 	register_setting( 'solr_extension_groups_options', 'wdm_solr_extension_groups_data' );
 	register_setting( 'solr_extension_s2member_options', 'wdm_solr_extension_s2member_data' );
+	register_setting( 'solr_operations_options', 'wdm_solr_operations_data' );
 }
 
 function fun_add_solr_settings() {
@@ -399,8 +400,6 @@ function fun_set_solr_options() {
 							</div>
 							<div class="wdm_row">
 								<div class="submit">
-									<!--<input name="save_selected_options_third" type="submit" class="button-primary wdm-save" value="<?php //esc_attr_e('Save Changes');
-									?>" />-->
 									<input name="check_solr_status_third" id='check_solr_status_third' type="button"
 									       class="button-primary wdm-save" value="Check Solr Status, Then Save"/> <span><img
 											src='<?php echo plugins_url( 'images/gif-load_cir.gif', __FILE__ )?>'
@@ -824,36 +823,46 @@ function fun_set_solr_options() {
 
 			case 'solr_operations':
 
-				$solr                                   = new wp_Solr();
-
-				$count_documents_indexed_last_operation = $solr->get_count_documents_indexed_last_operation();
+				$solr                             = new wp_Solr();
+				$count_nb_documents_to_be_indexed = $solr->count_nb_documents_to_be_indexed();
 
 				?>
 
 				<div id="solr-operations-tab">
-					<form method='post' id='solr_actions'>
+					<form action="options.php" method='post' id='solr_actions'>
+						<?php
+
+						settings_fields( 'solr_operations_options' );
+
+						$solr_operations_options = get_option( 'wdm_solr_operations_data' );
+
+						$batch_size = empty( $solr_operations_options['batch_size'] ) ? '100' : $solr_operations_options['batch_size'];
+
+						?>
+						<input type='hidden' id='adm_path' value='<?php echo admin_url(); ?>'> <!-- for ajax -->
 						<div class='wrapper'>
 							<h4 class='head_div'>Solr Operations</h4>
 
 							<div class="wdm_note">
 								<div>
-									A total of
-									<b>
-										<?php
-										echo $solr->get_count_documents();
-										?>
-									</b>
-									documents are currently in your index
+									<?php
+									try {
+										$nb_documents_in_index = $solr->get_count_documents();
+										echo "<b>A total of $nb_documents_in_index documents are currently in your index</b>";
+									} catch ( Exception $e ) {
+										echo '<b>Please check your Solr Hosting, an exception occured while calling your Solr server:</b> <br><br>' . htmlentities( $e->getMessage() );
+									}
+									?>
 								</div>
-								<?php if ( $count_documents_indexed_last_operation >= 0 ): ?>
+								<?php if ( $count_nb_documents_to_be_indexed >= 0 ): ?>
 									<div><b>
 											<?php
-											echo $count_documents_indexed_last_operation;
+											echo $count_nb_documents_to_be_indexed;
 
 											// Reset value so it's not displayed next time this page is displayed.
-											$solr->update_count_documents_indexed_last_operation();
+											//$solr->update_count_documents_indexed_last_operation();
 											?>
-										</b> documents were added or updated during the last operation
+										</b> document(s) remain to be indexed
 									</div>
 								<?php endif ?>
 							</div>
@@ -861,7 +870,7 @@ function fun_set_solr_options() {
 								<p>The indexing is <b>incremental</b>: only documents updated after the last operation
 									are sent to the index.</p>
 
-								<p>So, the first operation will index all documents, by packs of 100.</p>
+								<p>So, the first operation will index all documents, by batches of <b><?php echo $batch_size ;?></b> documents.</p>
 
 								<p>If a <b>timeout</b> occurs, you just have to click on the button again: the process
 									will restart from where it stopped.</p>
@@ -869,19 +878,32 @@ function fun_set_solr_options() {
 								<p>If you need to reindex all again, delete the index first.</p>
 							</div>
 							<div class="wdm_row">
+								<div class='col_left'>Number of documents sent in Solr as a single commit.<br>
+									You can change this number to control indexing's performance.
+								</div>
+								<div class='col_right'>
+									<input type='text' id='batch_size' name='wdm_solr_operations_data[batch_size]'
+									       placeholder="Enter a Number"
+									       value="<?php echo $batch_size ;?>">
+									<span class='res_err'></span><br>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="wdm_row">
 								<div class="submit">
-									<input name="solr_index_data" type="submit" class="button-primary wdm-save"
-									       id='solr_index_data' value="Load documents incrementally in the Solr index"/>
-                                        <span class='status_index_message'>
-                              
-                                        </span>
+									<input name="solr_start_index_data" type="submit" class="button-primary wdm-save"
+									       id='solr_start_index_data'
+									       value="Synchronize Wordpress with my Solr index"/>
+									<input name="solr_stop_index_data" type="submit" class="button-primary wdm-save"
+									       id='solr_stop_index_data' value="Stop current indexing"
+									       style="visibility: hidden;"/>
+									<span class='status_index_icon'></span>
+									<span class='status_index_message'></span>
 
 									<input name="solr_delete_index" id="solr_delete_index" type="submit"
 									       class="button-primary wdm-save" value="Empty the Solr index"/>
-                            
-                                        <span class='status_del_message'>
-                              
-                                        </span>
+
+									<span class='status_del_message'></span>
 								</div>
 							</div>
 						</div>

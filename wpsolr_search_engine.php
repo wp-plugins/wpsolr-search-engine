@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Enterprise search in seconds
  * Description: Apache Solr search with facets, autocompletion, and suggestions. Ready in seconds with optional hosting.
- * Version: 2.3
+ * Version: 2.4
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
  */
 
-require_once 'solr_services.php';
+require_once 'ajax_solr_services.php';
 require_once 'dashboard_settings.php';
 require_once 'class-wp-solr.php';
 require_once 'autocomplete.php';
@@ -24,6 +24,22 @@ add_action( 'wp_head', 'check_default_options_and_function' );
 add_action( 'admin_menu', 'fun_add_solr_settings' );
 add_action( 'admin_init', 'func_reg_solr_form_setting' );
 
+/*
+ * Display errors in admin
+ */
+function solr_post_save_admin_notice() {
+	if ( $out = get_transient( get_current_user_id() . 'error_solr_post_save_admin_notice' ) ) {
+		delete_transient( get_current_user_id() . 'error_solr_post_save_admin_notice' );
+		echo "<div class=\"error\"><p>(WPSOLR) Error while indexing this post/page in Solr:<br><br>$out</p></div>";
+	}
+
+	if ( $out = get_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice' ) ) {
+		delete_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice' );
+		echo "<div class=\"updated\"><p>(WPSOLR) $out</p></div>";
+	}
+}
+
+add_action( 'admin_notices', "solr_post_save_admin_notice" );
 
 /*
  * Add/remove document to/from Solr index when status changes to/from published
@@ -32,21 +48,33 @@ add_action( 'admin_init', 'func_reg_solr_form_setting' );
 function add_remove_document_to_solr_index( $post_id, $post, $update ) {
 
 	// If this is just a revision, don't go on.
-	if ( wp_is_post_revision( $post_id ) )
+	if ( wp_is_post_revision( $post_id ) ) {
 		return;
+	}
 
-	if ( 'publish' == $post->post_status ) {
-		// post published, add/update it from Solr index
+	try {
+		if ( 'publish' == $post->post_status ) {
+			// post published, add/update it from Solr index
 
-		$solr = new wp_Solr();
+			$solr = new wp_Solr();
 
-		$solr->index_data( $post );
+			$solr->index_data( 1, $post );
 
-	} else {
-		// post unpublished, remove it from Solr index
-		$solr = new wp_Solr();
+			// Display confirmation in admin
+			set_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice', 'Post/page indexed in Solr' );
 
-		$solr->delete_document( $post );
+		} else {
+			// post unpublished, remove it from Solr index
+			$solr = new wp_Solr();
+
+			$solr->delete_document( $post );
+
+			// Display confirmation in admin
+			set_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice', 'Post/Page deleted from Solr' );
+		}
+
+	} catch ( Exception $e ) {
+		set_transient( get_current_user_id() . 'error_solr_post_save_admin_notice', htmlentities( $e->getMessage() ) );
 	}
 
 }

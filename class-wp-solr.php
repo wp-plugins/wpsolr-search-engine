@@ -578,19 +578,25 @@ class wp_Solr {
 	 * Use a dedicated postfix added to the option name.
 	 */
 
-	public function index_data( $post = null ) {
+	public function count_nb_documents_to_be_indexed() {
+
+		return wp_Solr::index_data( 0, null );
+
+	}
+
+
+	/*
+	 * Fetch posts and attachments,
+	 * Transorm them in Solr documents,
+	 * Send them in packs to Solr
+	 */
+
+	public function index_data( $batch_size = 100, $post = null ) {
 
 		global $wpdb;
 
 		// Last post date set in previous call. We begin with posts published after.
 		$lastPostDate = wp_Solr::get_hosting_option( 'solr_last_post_date_indexed', '1000-01-01 00:00:00' );
-
-		// Reset last operation result
-		wp_Solr::update_count_documents_indexed_last_operation( 0 );
-
-		$batch_size = 100;
-		$res_final  = 0;
-		$cnt        = 0;
 
 		$tbl   = $wpdb->prefix . 'posts';
 		$where = '';
@@ -633,43 +639,65 @@ class wp_Solr {
 
 
 		// Build the query
-		$query = "";
 		// We need post_parent and post_type, too, to handle attachments
-		$query .= " SELECT ID, post_modified, post_parent, post_type ";
+		$query = "";
+
+		if ( $batch_size == 0 ) {
+			// count only
+			$query .= " SELECT count(ID) as TOTAL ";
+		} else {
+			$query .= " SELECT ID, post_modified, post_parent, post_type ";
+		}
+
 		$query .= " FROM $tbl ";
 		$query .= " WHERE ";
-		$query .= " post_modified > %s ";
 		if ( isset( $post ) ) {
 			// Add condition on the $post
-			$query .= " AND ID = %d";
+			$query .= " ID = %d";
+		} else {
+			// Condition on the date only for the batch, not for individual posts
+			$query .= " post_modified > %s ";
 		}
 		$query .= " AND ( $where ) ";
-		$query .= " ORDER BY ID ASC ";
-		$query .= " LIMIT $batch_size ";
+		if ( $batch_size > 0 ) {
 
-		$documents = array();
-		$doc_count = 0;
+			$query .= " ORDER BY post_modified ASC ";
+			$query .= " LIMIT $batch_size ";
+		}
+
+		$documents     = array();
+		$doc_count     = 0;
+		$no_more_posts = false;
 		while ( true ) {
 
 			// Execute query (retrieve posts IDs, parents and types)
 			if ( isset( $post ) ) {
-				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate, $post->ID ), ARRAY_A );
+				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $post->ID ), ARRAY_A );
 			} else {
 				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate ), ARRAY_A );
 			}
+
+			if ( $batch_size == 0 ) {
+				// Just return the count
+				return $ids_array[0]['TOTAL'];
+			}
+
 
 			// Aggregate current batch IDs in one Solr update statement
 			$postcount = count( $ids_array );
 
 			if ( $postcount == 0 ) {
 				// No more documents to index, stop now by exiting the loop
+				$no_more_posts = true;
 				break;
 			}
 
-
-			// In 2 steps to be valid in PHP 5.3
-			$lastPost     = end( $ids_array );
-			$lastPostDate = $lastPost['post_modified'];
+			// For the batch, update the last post date with current post's date
+			if ( ! isset( $post ) ) {
+				// In 2 steps to be valid in PHP 5.3
+				$lastPost     = end( $ids_array );
+				$lastPostDate = $lastPost['post_modified'];
+			}
 
 			// Get the ID of every published post
 			// We need these to be able to check whether a parent post of an attachment has been published
@@ -685,21 +713,23 @@ class wp_Solr {
 				if ( ! in_array( $postid, $ex_ids ) ) {
 					// If post is not an attachment
 					if ( $ids_array[ $idx ]['post_type'] != 'attachment' ) {
+
 						// Count this post
 						$doc_count ++;
+
 						// Get the posts data
 						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $ind_opt, get_post( $postid ) );
 					} else {
 						// Post is of type "attachment"
-						// Post's parent has been published
-						if ( in_array( $ids_array[ $idx ]['post_parent'], $published_ids ) ) {
-							// Count this post
-							$doc_count ++;
-							// Get the attachments body
-							$attachment_body = wp_Solr::get_attachment_body( $extractQuery, get_post( $postid ) );
-							// Get the posts data
-							$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $ind_opt, get_post( $postid ), $attachment_body );
-						}
+
+						// Count this post
+						$doc_count ++;
+
+						// Get the attachments body with a Solr Tika extract query
+						$attachment_body = wp_Solr::get_attachment_body( $extractQuery, get_post( $postid ) );
+
+						// Get the posts data
+						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $ind_opt, get_post( $postid ), $attachment_body );
 					}
 				}
 			}
@@ -720,30 +750,25 @@ class wp_Solr {
 			// Don't send twice the same documents
 			$documents = array();
 
-			// Store last post date sent to Solr
-			wp_Solr::update_hosting_option( 'solr_last_post_date_indexed', $lastPostDate );
+			if ( ! isset( $post ) ) {
+				// Store last post date sent to Solr (for batch only)
+				wp_Solr::update_hosting_option( 'solr_last_post_date_indexed', $lastPostDate );
+			}
 
-			// Update nb of documents updated/added
-			wp_Solr::update_count_documents_indexed_last_operation( $doc_count );
-
+			// AJAX: one loop by ajax call
+			break;
 		}
 
-		return $res_final;
+		$status = ! $res_final ? 0 : $res_final->getStatus();
+
+		return $res_final = array(
+			'nb_results'        => $doc_count,
+			'status'            => $status,
+			'indexing_complete' => $no_more_posts
+		);
 
 	}
 
-
-	/*
-	 * Fetch posts and attachments,
-	 * Transorm them in Solr documents,
-	 * Send them in packs to Solr
-	 */
-
-	public function update_count_documents_indexed_last_operation( $count = null ) {
-
-		return wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation', is_null( $count ) ? - 1 : $count );
-
-	}
 
 	public function create_solr_document_from_post_or_attachment( $updateQuery, $opt, $post, $attachment_body = false ) {
 
