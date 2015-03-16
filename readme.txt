@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.4
+Current Version: 2.5
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.1
 
-Stable tag: 2.4
+Stable tag: 2.5
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
@@ -71,6 +71,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 2.5 =
+* Compatible with Solr 5.x: you'll need to use the new schema.xml
 
 = 2.4 =
 * Improved indexing process for large amount of data: the default batch size can be changed, timeouts are caught.

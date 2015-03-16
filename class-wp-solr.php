@@ -282,7 +282,7 @@ class wp_Solr {
 
 			$spell_msg      = '';
 			$spellChkResult = $resultset->getSpellcheck();
-			if ( ! $spellChkResult->getCorrectlySpelled() ) {
+			if ( $spellChkResult && ! $spellChkResult->getCorrectlySpelled() ) {
 				$collations = $spellChkResult->getCollations();
 				$term       = '';
 				foreach ( $collations as $collation ) {

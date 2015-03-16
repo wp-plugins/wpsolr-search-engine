@@ -96,7 +96,17 @@ class Spellcheck extends ResponseParserAbstract implements ComponentParserInterf
                 }
             }
 
-            return new SpellcheckResult\Result($suggestions, $collations, $correctlySpelled);
+	        // WPSOLR 2.5: Solr 5.0
+	        if ( isset( $data['spellcheck']['collations'] ) ) {
+		        // Convert object to array
+		        foreach ( $data['spellcheck']['collations'][1] as $key => $value ) {
+			        $collations[] = $key;
+			        $collations[] = $value;
+		        }
+		        $collations = $this->parseCollation($query, $collations );
+	        }
+
+	        return new SpellcheckResult\Result($suggestions, $collations, $correctlySpelled);
         } else {
             return null;
         }
