@@ -1,6 +1,8 @@
 <?php
 
 require_once plugin_dir_path( __FILE__ ) . 'classes/extensions/wpsolr-extensions.php';
+require_once plugin_dir_path( __FILE__ ) . 'classes/wpsolr-filters.php';
+
 
 class wp_Solr {
 
@@ -489,7 +491,7 @@ class wp_Solr {
 			}
 
 			// Groups bloc - Bottom right
-			$wpsolr_groups_message = apply_filters( WpSolrExtensions::FILTER_SOLR_DOCUMENT_ADD_GROUPS, get_current_user_id(), $document );
+			$wpsolr_groups_message = apply_filters( WpSolrFilters::WPSOLR_FILTER_SOLR_RESULTS_DOCUMENT_GROUPS_INFOS, get_current_user_id(), $document );
 			if ( isset( $wpsolr_groups_message ) ) {
 
 				// Display groups of this user which owns at least one the document capability
@@ -591,6 +593,13 @@ class wp_Solr {
 	 * Send them in packs to Solr
 	 */
 
+	/**
+	 * @param int $batch_size
+	 * @param null $post
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function index_data( $batch_size = 100, $post = null ) {
 
 		global $wpdb;
@@ -604,12 +613,12 @@ class wp_Solr {
 		$client      = $this->client;
 		$updateQuery = $client->createUpdate();
 		// Get body of attachment
-		$extractQuery = $client->createExtract();
+		$solarium_extract_query = $client->createExtract();
 
-		$ind_opt = get_option( 'wdm_solr_form_data' );
+		$solr_indexing_options = get_option( 'wdm_solr_form_data' );
 
-		$post_types = $ind_opt['p_types'];
-		$exclude_id = $ind_opt['exclude_ids'];
+		$post_types = $solr_indexing_options['p_types'];
+		$exclude_id = $solr_indexing_options['exclude_ids'];
 		$ex_ids     = array();
 		$ex_ids     = explode( ',', $exclude_id );
 		$posts      = explode( ',', $post_types );
@@ -718,7 +727,7 @@ class wp_Solr {
 						$doc_count ++;
 
 						// Get the posts data
-						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $ind_opt, get_post( $postid ) );
+						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ) );
 					} else {
 						// Post is of type "attachment"
 
@@ -726,10 +735,10 @@ class wp_Solr {
 						$doc_count ++;
 
 						// Get the attachments body with a Solr Tika extract query
-						$attachment_body = wp_Solr::get_attachment_body( $extractQuery, get_post( $postid ) );
+						$attachment_body = wp_Solr::extract_attachment_text_by_calling_solr_tika( $solarium_extract_query, get_post( $postid ) );
 
 						// Get the posts data
-						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $ind_opt, get_post( $postid ), $attachment_body );
+						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ), $attachment_body );
 					}
 				}
 			}
@@ -770,11 +779,19 @@ class wp_Solr {
 	}
 
 
-	public function create_solr_document_from_post_or_attachment( $updateQuery, $opt, $post, $attachment_body = false ) {
+	/**
+	 * @param $solarium_update_query
+	 * @param $solr_indexing_options
+	 * @param $post
+	 * @param null $attachment_body
+	 *
+	 * @return mixed
+	 */
+	public function create_solr_document_from_post_or_attachment( $solarium_update_query, $solr_indexing_options, $post, $attachment_body = null ) {
 
 		$pid    = $post->ID;
 		$ptitle = $post->post_title;
-		if ( $attachment_body ) {
+		if ( isset( $attachment_body ) ) {
 			// Post is an attachment: we get the document body from the function call
 			$pcontent = $attachment_body;
 		} else {
@@ -792,7 +809,7 @@ class wp_Solr {
 		$purl             = get_permalink( $pid );
 		$pcomments        = array();
 		$comments_con     = array();
-		$comm             = isset( $opt['comments'] ) ? $opt['comments'] : '';
+		$comm             = isset( $solr_indexing_options['comments'] ) ? $solr_indexing_options['comments'] : '';
 
 		$numcomments = 0;
 		if ( $comm ) {
@@ -813,7 +830,7 @@ class wp_Solr {
 			Get all custom categories selected for indexing, including 'category'
 		*/
 		$cats   = array();
-		$taxo   = $opt['taxonomies'];
+		$taxo   = $solr_indexing_options['taxonomies'];
 		$aTaxo  = explode( ',', $taxo );
 		$newTax = array( 'category' );
 		foreach ( $aTaxo as $a ) {
@@ -845,28 +862,28 @@ class wp_Solr {
 
 		$solr_options = get_option( 'wdm_solr_conf_data' );
 
-		$doc1        = $updateQuery->createDocument();
+		$solarium_document_for_update        = $solarium_update_query->createDocument();
 		$numcomments = 0;
 
-		$doc1->id      = $pid;
-		$doc1->PID     = $pid;
-		$doc1->title   = $ptitle;
-		$doc1->content = strip_tags( $pcontent );
+		$solarium_document_for_update->id      = $pid;
+		$solarium_document_for_update->PID     = $pid;
+		$solarium_document_for_update->title   = $ptitle;
+		$solarium_document_for_update->content = strip_tags( $pcontent );
 
-		$doc1->author          = $pauthor;
-		$doc1->author_s        = $pauthor_s;
-		$doc1->type            = $ptype;
-		$doc1->date            = $pdate;
-		$doc1->modified        = $pmodified;
-		$doc1->displaydate     = $pdisplaydate;
-		$doc1->displaymodified = $pdisplaymodified;
+		$solarium_document_for_update->author          = $pauthor;
+		$solarium_document_for_update->author_s        = $pauthor_s;
+		$solarium_document_for_update->type            = $ptype;
+		$solarium_document_for_update->date            = $pdate;
+		$solarium_document_for_update->modified        = $pmodified;
+		$solarium_document_for_update->displaydate     = $pdisplaydate;
+		$solarium_document_for_update->displaymodified = $pdisplaymodified;
 
-		$doc1->permalink   = $purl;
-		$doc1->comments    = $pcomments;
-		$doc1->numcomments = $pnumcomments;
-		$doc1->categories  = $cats;
+		$solarium_document_for_update->permalink   = $purl;
+		$solarium_document_for_update->comments    = $pcomments;
+		$solarium_document_for_update->numcomments = $pnumcomments;
+		$solarium_document_for_update->categories  = $cats;
 
-		$doc1->tags = $tag_array;
+		$solarium_document_for_update->tags = $tag_array;
 
 		$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
 		foreach ( $taxonomies as $parent ) {
@@ -877,20 +894,20 @@ class wp_Solr {
 					foreach ( $terms as $term ) {
 						$nm1        = $parent . '_str';
 						$nm2        = $parent . '_srch';
-						$doc1->$nm1 = $term->name;
-						$doc1->$nm2 = $term->name;
+						$solarium_document_for_update->$nm1 = $term->name;
+						$solarium_document_for_update->$nm2 = $term->name;
 					}
 				}
 			}
 		}
 
-		$custom  = $opt['cust_fields'];
+		$custom  = $solr_indexing_options['cust_fields'];
 		$aCustom = explode( ',', $custom );
 		if ( count( $aCustom ) > 0 ) {
 			if ( count( $custom_fields = get_post_custom( $post->ID ) ) ) {
 
 				// Apply filters on custom fields
-				$custom_fields = apply_filters( WpSolrExtensions::FILTER_SOLR_DOCUMENT_CUSTOM_FIELD, $post->ID, $custom_fields );
+				$custom_fields = apply_filters( WpSolrFilters::WPSOLR_FILTER_POST_CUSTOM_FIELDS, $post->ID, $custom_fields );
 
 				foreach ( (array) $aCustom as $field_name ) {
 					if ( substr( $field_name, ( strlen( $field_name ) - 4 ), strlen( $field_name ) ) == "_str" ) {
@@ -904,47 +921,66 @@ class wp_Solr {
 						// Add custom field array of values
 						$nm1        = $field_name . '_str';
 						$nm2        = $field_name . '_srch';
-						$doc1->$nm1 = $field;
-						$doc1->$nm2 = $field;
+						$solarium_document_for_update->$nm1 = $field;
+						$solarium_document_for_update->$nm2 = $field;
 
 					}
 				}
 			}
 		}
 
-		return $doc1;
+		// Last chance to customize the solarium update document
+		$solarium_document_for_update = apply_filters( WpSolrFilters::WPSOLR_FILTER_SOLARIUM_DOCUMENT_FOR_UPDATE , $solarium_document_for_update, $solr_indexing_options, $post, $attachment_body );
+
+		return $solarium_document_for_update;
 
 	}
 
-	public function get_attachment_body( $extractQuery, $post ) {
-		$solr_options = get_option( 'wdm_solr_conf_data' );
+	/**
+	 * @param $solarium_extract_query
+	 * @param $post
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public function extract_attachment_text_by_calling_solr_tika( $solarium_extract_query, $post ) {
 
 		try {
 			// Set URL to attachment
-			$extractQuery->setFile( get_attached_file( $post->ID ) );
-			$doc1 = $extractQuery->createDocument();
-			$extractQuery->setDocument( $doc1 );
+			$solarium_extract_query->setFile( get_attached_file( $post->ID ) );
+			$doc1 = $solarium_extract_query->createDocument();
+			$solarium_extract_query->setDocument( $doc1 );
 			// We don't want to add the document to the solr index now
-			$extractQuery->addParam( 'extractOnly', 'true' );
+			$solarium_extract_query->addParam( 'extractOnly', 'true' );
 			// Try to extract the document body
 			$client   = $this->client;
-			$result   = $client->extract( $extractQuery );
+			$result   = $client->extract( $solarium_extract_query );
 			$response = $result->getResponse()->getBody();
-			$body     = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
-			$body     = str_replace( '\n', ' ', $body );
+			$attachment_text_extracted_from_tika     = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
+			$attachment_text_extracted_from_tika     = str_replace( '\n', ' ', $attachment_text_extracted_from_tika );
 		} catch ( Exception $e ) {
-			throw new Exception( 'Error on attached file "' . $post->post_title . '": <br/>' . $e->getMessage() );
+			throw new Exception( 'Error on attached file "' . $post->post_title . '": <br/>' . $e->getMessage(), $e->getCode() );
 		}
 
-		return $body;
+		// Last chance to customize the tika extracted attachment body
+		$attachment_text_extracted_from_tika = apply_filters( WpSolrFilters::WPSOLR_FILTER_ATTACHMENT_TEXT_EXTRACTED_BY_APACHE_TIKA , $attachment_text_extracted_from_tika, $solarium_extract_query, $post );
+
+		return $attachment_text_extracted_from_tika;
 	}
 
-	public function send_posts_or_attachments_to_solr_index( $updateQuery, $documents ) {
+
+	/**
+	 * @param $solarium_update_query
+	 * @param $documents
+	 *
+	 * @return mixed
+	 */
+	public function send_posts_or_attachments_to_solr_index( $solarium_update_query, $documents ) {
 
 		$client = $this->client;
-		$updateQuery->addDocuments( $documents );
-		$updateQuery->addCommit();
-		$result = $client->update( $updateQuery );
+		$solarium_update_query->addDocuments( $documents );
+		$solarium_update_query->addCommit();
+		$result = $client->update( $solarium_update_query );
 
 		return $result;
 

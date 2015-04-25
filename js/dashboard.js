@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
             success: function (data) {
 
                 // Errors
-                if (data.status != 0) {
+                if (data.status != 0 || data.message) {
                     jQuery('.status_index_message').html('An error occured: <br>' + data.message);
                 }
                 // If indexing completed, stop. Else, call once more.
@@ -114,11 +114,12 @@ jQuery(document).ready(function () {
             },
             error: function (req, status, error) {
 
-                var message = ''
+                var message = '';
+
                 if (batch_size > 100) {
                     message = '<br> You could try to decrease your batch size to prevent errors or timeouts.';
                 }
-                jQuery('.status_index_message').html('An error or timeout occured: <br>' + error + '(error code: ' + status + ')' + message);
+                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>'  + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
 
             },
             timeout: function (req, status, error) {

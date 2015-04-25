@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.5
+Current Version: 2.6
 
 Author:  WPSOLR.COM
 
@@ -12,9 +12,9 @@ Tags: Solr in WordPress, relevance, Solr search, fast search, wpsolr, apache sol
 
 Requires at least: 3.7.1
 
-Tested up to: 4.1
+Tested up to: 4.2
 
-Stable tag: 2.5
+Stable tag: 2.6
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
 
@@ -72,11 +72,15 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 == Changelog ==
 
+= 2.6 =
+* WARNING: this version will require you to re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
+* Introduce a new filter for developpers to tweak custom fields sent to Solr
+
 = 2.5 =
-* WARNING: this version will require you re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
 * Compatible with Solr 5.x: you'll need to use the new schema.xml
 
 = 2.4 =
+* WARNING: this version will require you to re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
 * Improved indexing process for large amount of data: the default batch size can be changed, timeouts are caught.
 
 = 2.3 =
@@ -130,6 +134,12 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Frequently Asked Questions ==
+
+= Which PHP version is required?=
+
+WPSOLR uses a Solr client library, Solarium, which requires namespaces.
+
+Namespaces are supported by PHP >= 5.3.0
 
 = How do I install and configure Solr? =
 

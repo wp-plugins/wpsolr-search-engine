@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Enterprise search in seconds
  * Description: Apache Solr search with facets, autocompletion, and suggestions. Ready in seconds with optional hosting.
- * Version: 2.5
+ * Version: 2.6
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -25,7 +25,7 @@ add_action( 'admin_menu', 'fun_add_solr_settings' );
 add_action( 'admin_init', 'func_reg_solr_form_setting' );
 
 /*
- * Display errors in admin
+ * Display Solr errors in admin when a save on a post can't index to Solr
  */
 function solr_post_save_admin_notice() {
 	if ( $out = get_transient( get_current_user_id() . 'error_solr_post_save_admin_notice' ) ) {
@@ -214,4 +214,4 @@ function solr_search_form() {
 
 
 }
-  
+
