@@ -73,6 +73,7 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 == Changelog ==
 
 = 2.5 =
+* WARNING: this version will require you re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
 * Compatible with Solr 5.x: you'll need to use the new schema.xml
 
 = 2.4 =
