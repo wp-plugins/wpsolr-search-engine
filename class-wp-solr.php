@@ -236,7 +236,7 @@ class wp_Solr {
 
 		$msg    = '';
 		$client = $this->client;
-		$term   = str_replace( ' ', '\ ', $term );
+		//$term   = str_replace( ' ', '\ ', $term );
 
 		$query = $client->createSelect();
 
@@ -282,21 +282,22 @@ class wp_Solr {
 			$spellChk->setCollateExtendedResults( true );
 			$resultset = $client->select( $query );
 
-			$spell_msg      = '';
+
 			$spellChkResult = $resultset->getSpellcheck();
 			if ( $spellChkResult && ! $spellChkResult->getCorrectlySpelled() ) {
-				$collations = $spellChkResult->getCollations();
-				$term       = '';
+				$collations          = $spellChkResult->getCollations();
+				$queryTermsCorrected = $term; // original query
 				foreach ( $collations as $collation ) {
 					foreach ( $collation->getCorrections() as $input => $correction ) {
-						$term .= $correction;
+						$queryTermsCorrected = str_replace( $input, $correction, $queryTermsCorrected );
 					}
+
 				}
 
-				if ( strlen( $term ) > 0 ) {
-					$err_msg = 'Did you mean: <b>' . $term . '</b><br />';
+				if ( $queryTermsCorrected != $term ) {
+					$err_msg = 'Did you mean: <b>' . $queryTermsCorrected . '</b><br />';
 
-					$query->setQuery( $term );
+					$query->setQuery( $queryTermsCorrected );
 
 				}
 				$search_result[] = $err_msg;
@@ -799,8 +800,8 @@ class wp_Solr {
 			$pcontent = $post->post_content;
 		}
 		$pauth_info       = get_userdata( $post->post_author );
-		$pauthor          = $pauth_info->display_name;
-		$pauthor_s        = get_author_posts_url( $pauth_info->ID, $pauth_info->user_nicename );
+		$pauthor          = isset( $pauth_info ) ? $pauth_info->display_name : '';
+		$pauthor_s        = isset( $pauth_info ) ? get_author_posts_url( $pauth_info->ID, $pauth_info->user_nicename ) : '';
 		$ptype            = $post->post_type;
 		$pdate            = solr_format_date( $post->post_date_gmt );
 		$pmodified        = solr_format_date( $post->post_modified_gmt );
@@ -862,8 +863,8 @@ class wp_Solr {
 
 		$solr_options = get_option( 'wdm_solr_conf_data' );
 
-		$solarium_document_for_update        = $solarium_update_query->createDocument();
-		$numcomments = 0;
+		$solarium_document_for_update = $solarium_update_query->createDocument();
+		$numcomments                  = 0;
 
 		$solarium_document_for_update->id      = $pid;
 		$solarium_document_for_update->PID     = $pid;
@@ -892,8 +893,8 @@ class wp_Solr {
 				if ( (array) $terms === $terms ) {
 					$parent = strtolower( str_replace( ' ', '_', $parent ) );
 					foreach ( $terms as $term ) {
-						$nm1        = $parent . '_str';
-						$nm2        = $parent . '_srch';
+						$nm1                                = $parent . '_str';
+						$nm2                                = $parent . '_srch';
 						$solarium_document_for_update->$nm1 = $term->name;
 						$solarium_document_for_update->$nm2 = $term->name;
 					}
@@ -919,8 +920,8 @@ class wp_Solr {
 						$field_name = strtolower( str_replace( ' ', '_', $field_name ) );
 
 						// Add custom field array of values
-						$nm1        = $field_name . '_str';
-						$nm2        = $field_name . '_srch';
+						$nm1                                = $field_name . '_str';
+						$nm2                                = $field_name . '_srch';
 						$solarium_document_for_update->$nm1 = $field;
 						$solarium_document_for_update->$nm2 = $field;
 
@@ -930,7 +931,7 @@ class wp_Solr {
 		}
 
 		// Last chance to customize the solarium update document
-		$solarium_document_for_update = apply_filters( WpSolrFilters::WPSOLR_FILTER_SOLARIUM_DOCUMENT_FOR_UPDATE , $solarium_document_for_update, $solr_indexing_options, $post, $attachment_body );
+		$solarium_document_for_update = apply_filters( WpSolrFilters::WPSOLR_FILTER_SOLARIUM_DOCUMENT_FOR_UPDATE, $solarium_document_for_update, $solr_indexing_options, $post, $attachment_body );
 
 		return $solarium_document_for_update;
 
@@ -953,17 +954,17 @@ class wp_Solr {
 			// We don't want to add the document to the solr index now
 			$solarium_extract_query->addParam( 'extractOnly', 'true' );
 			// Try to extract the document body
-			$client   = $this->client;
-			$result   = $client->extract( $solarium_extract_query );
-			$response = $result->getResponse()->getBody();
-			$attachment_text_extracted_from_tika     = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
-			$attachment_text_extracted_from_tika     = str_replace( '\n', ' ', $attachment_text_extracted_from_tika );
+			$client                              = $this->client;
+			$result                              = $client->extract( $solarium_extract_query );
+			$response                            = $result->getResponse()->getBody();
+			$attachment_text_extracted_from_tika = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
+			$attachment_text_extracted_from_tika = str_replace( '\n', ' ', $attachment_text_extracted_from_tika );
 		} catch ( Exception $e ) {
 			throw new Exception( 'Error on attached file "' . $post->post_title . '": <br/>' . $e->getMessage(), $e->getCode() );
 		}
 
 		// Last chance to customize the tika extracted attachment body
-		$attachment_text_extracted_from_tika = apply_filters( WpSolrFilters::WPSOLR_FILTER_ATTACHMENT_TEXT_EXTRACTED_BY_APACHE_TIKA , $attachment_text_extracted_from_tika, $solarium_extract_query, $post );
+		$attachment_text_extracted_from_tika = apply_filters( WpSolrFilters::WPSOLR_FILTER_ATTACHMENT_TEXT_EXTRACTED_BY_APACHE_TIKA, $attachment_text_extracted_from_tika, $solarium_extract_query, $post );
 
 		return $attachment_text_extracted_from_tika;
 	}

@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.6
+Current Version: 2.7
 
 Author:  WPSOLR.COM
 
@@ -12,11 +12,11 @@ Tags: Solr in WordPress, relevance, Solr search, fast search, wpsolr, apache sol
 
 Requires at least: 3.7.1
 
-Tested up to: 4.2
+Tested up to: 4.2.2
 
-Stable tag: 2.6
+Stable tag: 2.7
 
-Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting
+Replace your sluggish and rigid search with the world open source leader Apache Solr wich powers the leading internet websites
 
 == Description ==
 
@@ -26,7 +26,7 @@ New ! <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCo
 
 New ! Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
 
-Replace the standard WP search with a high performance/quality search, performed by the world's leading open source search engine, Apache Solr.
+Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting.
 
 Standard WP search is performed by SQL queries directly on the database. So do most of search plugins.
 But SQL is awfully greedy in computer resources, especially when it comes to table joins and wild cards (select * where field like ‘%keyword%’), which are both heavily used by search.
@@ -71,6 +71,10 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 2.7 =
+* Fix bug which prevented partial search "tem1 term3" to match results, while "tem1 term2 term3" did.
+* "Did you mean" now displays multiple terms suggestions. For instance "salr serch" can now suggest "solr search".
 
 = 2.6 =
 * WARNING: this version will require you to re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
