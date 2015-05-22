@@ -14,17 +14,11 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 2.7
+Stable tag: 2.8
 
-Replace your sluggish and rigid search with the world open source leader Apache Solr wich powers the leading internet websites
+Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
 == Description ==
-
-New ! <a href="https://wordpress.org/plugins/s2member/" target="_blank">s2member</a>: filter Solr results with user levels and custom capabilities.
-
-New ! <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCommerce</a>:  product taxonomies (product_cat , product_tag) are now searchable.
-
-New ! Integration with <a href="https://wordpress.org/plugins/groups/" target="_blank">Groups plugin</a>: filter Solr results with user groups and posts capabilities.
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting.
 
@@ -71,6 +65,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 2.8 =
+* Fix bug which prevented some keywords to be highlighted in search results snippets.
 
 = 2.7 =
 * Fix bug which prevented partial search "tem1 term3" to match results, while "tem1 term2 term3" did.

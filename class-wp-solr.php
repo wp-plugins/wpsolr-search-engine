@@ -6,6 +6,9 @@ require_once plugin_dir_path( __FILE__ ) . 'classes/wpsolr-filters.php';
 
 class wp_Solr {
 
+	// Field queried by default. Necessary to get highlighting good.
+	const DEFAULT_QUERY_FIELD = 'text:';
+
 	public $client;
 	public $select_query;
 	protected $config;
@@ -240,7 +243,7 @@ class wp_Solr {
 
 		$query = $client->createSelect();
 
-		$query->setQuery( $term );
+		$query->setQuery( self::DEFAULT_QUERY_FIELD . $term );
 
 		// Add extensions query filters
 		do_action( WpSolrExtensions::ACTION_SOLR_ADD_QUERY_FIELDS, wp_get_current_user(), $query );
