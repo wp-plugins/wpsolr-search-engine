@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 2.7
+Current Version: 2.9
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 2.8
+Stable tag: 2.9
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -65,6 +65,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 2.9 =
+* Fix bug on Windows installations: "Warning: session_start(): Cannot send session cache limiter - headers already sent ".
 
 = 2.8 =
 * Fix bug which prevented some keywords to be highlighted in search results snippets.
