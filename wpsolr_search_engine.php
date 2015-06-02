@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Apache Solr search by WPSOLR
  * Description: Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
- * Version: 2.9
+ * Version: 3.0
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -49,6 +49,11 @@ function add_remove_document_to_solr_index( $post_id, $post, $update ) {
 
 	// If this is just a revision, don't go on.
 	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
+	// If this is just a new post opened in editor, don't go on.
+	if ( 'auto-draft' == $post->post_status ) {
 		return;
 	}
 
