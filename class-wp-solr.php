@@ -911,7 +911,7 @@ class wp_Solr {
 			if ( count( $custom_fields = get_post_custom( $post->ID ) ) ) {
 
 				// Apply filters on custom fields
-				$custom_fields = apply_filters( WpSolrFilters::WPSOLR_FILTER_POST_CUSTOM_FIELDS, $post->ID, $custom_fields );
+				$custom_fields = apply_filters( WpSolrFilters::WPSOLR_FILTER_POST_CUSTOM_FIELDS, $custom_fields, $post->ID );
 
 				foreach ( (array) $aCustom as $field_name ) {
 					if ( substr( $field_name, ( strlen( $field_name ) - 4 ), strlen( $field_name ) ) == "_str" ) {
