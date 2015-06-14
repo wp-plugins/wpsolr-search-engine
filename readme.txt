@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.1
+Current Version: 3.2
 
 Author:  WPSOLR.COM
 
@@ -14,11 +14,13 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.1
+Stable tag: 3.2
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
 == Description ==
+
+Compatible with Apache Solr up to Solr 5.2
 
 Boost your search with multi-media content (pdf, .xls, .doc), facet filters, autocompletion, suggestions, and optional hosting.
 
@@ -65,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.2 =
+* WPSOLR is now compatible with the latest Solr 5.x versions. Tested up to Solr 5.2.
 
 = 3.1 =
 * Fix bug on filters which prevented custom fields to be indexed.
