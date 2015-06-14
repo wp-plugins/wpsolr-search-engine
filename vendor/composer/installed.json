@@ -61,17 +61,17 @@
     },
     {
         "name": "solarium/solarium",
-        "version": "3.4.0",
-        "version_normalized": "3.4.0.0",
+        "version": "3.4.1",
+        "version_normalized": "3.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/solariumphp/solarium.git",
-            "reference": "a9c1c5fb59991721fe5426acfe7f5f59c1d3d5c1"
+            "reference": "90d006c65efffcbcbfa8a31920e93c10d0657b96"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/solariumphp/solarium/zipball/a9c1c5fb59991721fe5426acfe7f5f59c1d3d5c1",
-            "reference": "a9c1c5fb59991721fe5426acfe7f5f59c1d3d5c1",
+            "url": "https://api.github.com/repos/solariumphp/solarium/zipball/90d006c65efffcbcbfa8a31920e93c10d0657b96",
+            "reference": "90d006c65efffcbcbfa8a31920e93c10d0657b96",
             "shasum": ""
         },
         "require": {
@@ -84,7 +84,7 @@
             "squizlabs/php_codesniffer": "~1.4",
             "zendframework/zendframework1": "~1.12"
         },
-        "time": "2015-06-14 07:09:46",
+        "time": "2015-06-14 17:22:39",
         "type": "library",
         "extra": {
             "branch-alias": {

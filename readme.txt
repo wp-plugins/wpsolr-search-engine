@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.2
+Current Version: 3.3
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.2
+Stable tag: 3.3
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.3 =
+* Fix curl CA verification error when calling a Solr index protected with https.
 
 = 3.2 =
 * WPSOLR is now compatible with the latest Solr 5.x versions. Tested up to Solr 5.2.

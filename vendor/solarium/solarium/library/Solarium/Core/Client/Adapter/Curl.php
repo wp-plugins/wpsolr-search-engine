@@ -94,6 +94,9 @@ class Curl extends Configurable implements AdapterInterface
     {
         // @codeCoverageIgnoreStart
         $handle = $this->createHandle($request, $endpoint);
+
+        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+
         $httpResponse = curl_exec($handle);
 
         return $this->getResponse($handle, $httpResponse);
@@ -155,14 +158,13 @@ class Curl extends Configurable implements AdapterInterface
             curl_setopt($handler, CURLOPT_PROXY, $proxy);
         }
 
-	    if (!isset($options['headers']['Content-Type'])) {
-		    if($method == Request::METHOD_GET){
-			    $options['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
-		    } else {
-			    $options['headers']['Content-Type'] = 'application/xml; charset=utf-8';
-		    }
-         }
-
+        if (!isset($options['headers']['Content-Type'])) {
+            if($method == Request::METHOD_GET){
+                $options['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+            } else {
+                $options['headers']['Content-Type'] = 'application/xml; charset=utf-8';
+            }
+        }
 
         // Try endpoint authentication first, fallback to request for backwards compatibility
         $authData = $endpoint->getAuthentication();
