@@ -1,5 +1,6 @@
 // Timout handler on the indexing process
 var timeoutHandler;
+var timeoutHandlerIsCleared = false;
 
 jQuery(document).ready(function () {
     jQuery(".radio_type").change(function () {
@@ -55,8 +56,10 @@ jQuery(document).ready(function () {
     jQuery('#solr_stop_index_data').click(function () {
 
         jQuery('#solr_stop_index_data').attr('value', 'Stopping ... please wait');
-        clearTimeout(timeoutHandler)
 
+        clearTimeout(timeoutHandler);
+
+        timeoutHandlerIsCleared = true;
     });
 
     // Fill the Solr index
@@ -69,6 +72,8 @@ jQuery(document).ready(function () {
         jQuery('#solr_delete_index').hide();
 
         batch_size = jQuery('#batch_size').val();
+        is_debug_indexing = jQuery('#is_debug_indexing').prop('checked');
+
         err = 1;
 
         if (isNaN(batch_size) || (batch_size < 1)) {
@@ -83,7 +88,7 @@ jQuery(document).ready(function () {
             return false;
         } else {
 
-            call_solr_index_data(batch_size, 0);
+            call_solr_index_data(batch_size, 0, is_debug_indexing);
 
             // Block submit
             return false;
@@ -93,7 +98,7 @@ jQuery(document).ready(function () {
 
 
     // Promise to the Ajax call
-    function call_solr_index_data(batch_size, nb_results) {
+    function call_solr_index_data(batch_size, nb_results, is_debug_indexing) {
 
         var nb_results_message = nb_results + ' documents indexed so far'
 
@@ -106,25 +111,40 @@ jQuery(document).ready(function () {
             type: "post",
             data: {
                 action: 'return_solr_index_data',
-                'batch_size': batch_size,
-                'nb_results': nb_results
+                batch_size: batch_size,
+                nb_results: nb_results,
+                is_debug_indexing: is_debug_indexing
             },
             dataType: "json",
             timeout: 1000 * 3600 * 24,
 
             success: function (data) {
 
-                //data = JSON.parse(data);
+                if (data.debug_text) {
+                    // Debug
+                    jQuery('.status_debug_message').append('<br><br>' + data.debug_text);
 
-                // Errors
-                if (data.status != 0 || data.message) {
-                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
+                    if (data.indexing_complete) {
+                        // Freeze the screen to have time to read debug infos
+                        return false;
+                    }
+
                 }
-                // If indexing completed, stop. Else, call once more.
+
+                if (data.status != 0 || data.message) {
+                    // Errors
+                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
+
+                }
                 else if (!data.indexing_complete) {
-                    timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results), 100);
+
+                    // If indexing completed, stop. Else, call once more.
+                    timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results, is_debug_indexing), 100);
+
+
                 } else {
                     jQuery('#solr_stop_index_data').click();
+
                 }
             },
             error: function (req, status, error) {

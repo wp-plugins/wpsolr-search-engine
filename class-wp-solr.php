@@ -593,13 +593,6 @@ class wp_Solr {
 
 	}
 
-
-	/*
-	 * Fetch posts and attachments,
-	 * Transorm them in Solr documents,
-	 * Send them in packs to Solr
-	 */
-
 	/**
 	 * @param int $batch_size
 	 * @param null $post
@@ -607,9 +600,12 @@ class wp_Solr {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function index_data( $batch_size = 100, $post = null ) {
+	public function index_data( $batch_size = 100, $post = null, $is_debug_indexing = false ) {
 
 		global $wpdb;
+
+		// Debug variable containing debug text
+		$debug_text = '';
 
 		// Last post date set in previous call. We begin with posts published after.
 		$lastPostDate = wp_Solr::get_hosting_option( 'solr_last_post_date_indexed', '1000-01-01 00:00:00' );
@@ -686,16 +682,46 @@ class wp_Solr {
 		$no_more_posts = false;
 		while ( true ) {
 
+			if ( $is_debug_indexing ) {
+				$this->add_debug_line( $debug_text, 'Beginning of new loop (batch size)' );
+			}
+
 			// Execute query (retrieve posts IDs, parents and types)
 			if ( isset( $post ) ) {
+
+				if ( $is_debug_indexing ) {
+					$this->add_debug_line( $debug_text, 'Query document with post->ID', Array(
+						'Query'   => $query,
+						'Post ID' => $post->ID
+					) );
+				}
+
 				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $post->ID ), ARRAY_A );
+
 			} else {
+
+				if ( $is_debug_indexing ) {
+					$this->add_debug_line( $debug_text, 'Query documents from last post date', Array(
+						'Query'          => $query,
+						'Last post date' => $lastPostDate
+					) );
+				}
+
 				$ids_array = $wpdb->get_results( $wpdb->prepare( $query, $lastPostDate ), ARRAY_A );
 			}
 
 			if ( $batch_size == 0 ) {
+
+				$nb_docs = $ids_array[0]['TOTAL'];
+
+				if ( $is_debug_indexing ) {
+					$this->add_debug_line( $debug_text, 'End of loop', Array(
+						'Number of documents in database to be indexed' => $nb_docs
+					) );
+				}
+
 				// Just return the count
-				return $ids_array[0]['TOTAL'];
+				return $nb_docs;
 			}
 
 
@@ -704,6 +730,11 @@ class wp_Solr {
 
 			if ( $postcount == 0 ) {
 				// No more documents to index, stop now by exiting the loop
+
+				if ( $is_debug_indexing ) {
+					$this->add_debug_line( $debug_text, 'No more documents, end of document loop' );
+				}
+
 				$no_more_posts = true;
 				break;
 			}
@@ -713,13 +744,6 @@ class wp_Solr {
 				// In 2 steps to be valid in PHP 5.3
 				$lastPost     = end( $ids_array );
 				$lastPostDate = $lastPost['post_modified'];
-			}
-
-			// Get the ID of every published post
-			// We need these to be able to check whether a parent post of an attachment has been published
-			$published_ids = array();
-			foreach ( $ids_array as $id_array ) {
-				$published_ids[] = $id_array['ID'];
 			}
 
 			for ( $idx = 0; $idx < $postcount; $idx ++ ) {
@@ -734,9 +758,24 @@ class wp_Solr {
 						$doc_count ++;
 
 						// Get the posts data
-						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ) );
+						$document = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ) );
+
+						if ( $is_debug_indexing ) {
+							$this->add_debug_line( $debug_text, null, Array(
+								'Post to be sent' => json_encode( $document->getFields(), JSON_PRETTY_PRINT )
+							) );
+						}
+
+						$documents[] = $document;
+
 					} else {
 						// Post is of type "attachment"
+
+						if ( $is_debug_indexing ) {
+							$this->add_debug_line( $debug_text, null, Array(
+								'Post ID to be indexed (attachment)' => $postid
+							) );
+						}
 
 						// Count this post
 						$doc_count ++;
@@ -745,13 +784,27 @@ class wp_Solr {
 						$attachment_body = wp_Solr::extract_attachment_text_by_calling_solr_tika( $solarium_extract_query, get_post( $postid ) );
 
 						// Get the posts data
-						$documents[] = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ), $attachment_body );
+						$document = wp_Solr::create_solr_document_from_post_or_attachment( $updateQuery, $solr_indexing_options, get_post( $postid ), $attachment_body );
+
+						if ( $is_debug_indexing ) {
+							$this->add_debug_line( $debug_text, null, Array(
+								'Attachment to be sent' => json_encode( $document->getFields(), JSON_PRETTY_PRINT )
+							) );
+						}
+
+						$documents[] = $document;
+
 					}
 				}
 			}
 
 			if ( empty( $documents ) || ! isset( $documents ) ) {
 				// No more documents to index, stop now by exiting the loop
+
+				if ( $is_debug_indexing ) {
+					$this->add_debug_line( $debug_text, 'End of loop, no more documents' );
+				}
+
 				break;
 			}
 
@@ -762,9 +815,6 @@ class wp_Solr {
 			if ( ( ! $res_final ) OR isset( $post ) ) {
 				break;
 			}
-
-			// Don't send twice the same documents
-			$documents = array();
 
 			if ( ! isset( $post ) ) {
 				// Store last post date sent to Solr (for batch only)
@@ -780,11 +830,39 @@ class wp_Solr {
 		return $res_final = array(
 			'nb_results'        => $doc_count,
 			'status'            => $status,
-			'indexing_complete' => $no_more_posts
+			'indexing_complete' => $no_more_posts,
+			'debug_text'        => $is_debug_indexing ? $debug_text : null
 		);
 
 	}
 
+	/*
+	 * Fetch posts and attachments,
+	 * Transform them in Solr documents,
+	 * Send them in packs to Solr
+	 */
+
+	/**
+	 * Add a debug line to the current debug text
+	 *
+	 * @param $is_debug_indexing
+	 * @param $debug_text
+	 * @param $debug_text_header
+	 * @param $debug_text_content
+	 */
+	public function add_debug_line( &$debug_text, $debug_line_header, $debug_text_header_content = null ) {
+
+		if ( isset( $debug_line_header ) ) {
+			$debug_text .= '******** DEBUG ACTIVATED - ' . $debug_line_header . ' *******' . '<br><br>';
+		}
+
+		if ( isset( $debug_text_header_content ) ) {
+
+			foreach ( $debug_text_header_content as $key => $value ) {
+				$debug_text .= $key . ':' . '<br>' . '<b>' . $value . '</b>' . '<br><br>';
+			}
+		}
+	}
 
 	/**
 	 * @param $solarium_update_query
@@ -794,7 +872,10 @@ class wp_Solr {
 	 *
 	 * @return mixed
 	 */
-	public function create_solr_document_from_post_or_attachment( $solarium_update_query, $solr_indexing_options, $post, $attachment_body = null ) {
+	public
+	function create_solr_document_from_post_or_attachment(
+		$solarium_update_query, $solr_indexing_options, $post, $attachment_body = null
+	) {
 
 		$pid    = $post->ID;
 		$ptitle = $post->post_title;
@@ -950,7 +1031,10 @@ class wp_Solr {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function extract_attachment_text_by_calling_solr_tika( $solarium_extract_query, $post ) {
+	public
+	function extract_attachment_text_by_calling_solr_tika(
+		$solarium_extract_query, $post
+	) {
 
 		try {
 			// Set URL to attachment
@@ -975,14 +1059,16 @@ class wp_Solr {
 		return $attachment_text_extracted_from_tika;
 	}
 
-
 	/**
 	 * @param $solarium_update_query
 	 * @param $documents
 	 *
 	 * @return mixed
 	 */
-	public function send_posts_or_attachments_to_solr_index( $solarium_update_query, $documents ) {
+	public
+	function send_posts_or_attachments_to_solr_index(
+		$solarium_update_query, $documents
+	) {
 
 		$client = $this->client;
 		$solarium_update_query->addDocuments( $documents );

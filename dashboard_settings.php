@@ -870,7 +870,8 @@ function fun_set_solr_options() {
 								<p>The indexing is <b>incremental</b>: only documents updated after the last operation
 									are sent to the index.</p>
 
-								<p>So, the first operation will index all documents, by batches of <b><?php echo $batch_size ;?></b> documents.</p>
+								<p>So, the first operation will index all documents, by batches of
+									<b><?php echo $batch_size;?></b> documents.</p>
 
 								<p>If a <b>timeout</b> occurs, you just have to click on the button again: the process
 									will restart from where it stopped.</p>
@@ -884,7 +885,18 @@ function fun_set_solr_options() {
 								<div class='col_right'>
 									<input type='text' id='batch_size' name='wdm_solr_operations_data[batch_size]'
 									       placeholder="Enter a Number"
-									       value="<?php echo $batch_size ;?>">
+									       value="<?php echo $batch_size;?>">
+									<span class='res_err'></span><br>
+								</div>
+								<div class="clear"></div>
+								<div class='col_left'>Display debug infos during indexing</div>
+								<div class='col_right'>
+
+									<input type='checkbox'
+									       id='is_debug_indexing'
+									       name='wdm_solr_operations_data[is_debug_indexing]'
+									       value='is_debug_indexing'
+										<?php checked( 'is_debug_indexing', $solr_operations_options['is_debug_indexing'] );?>>
 									<span class='res_err'></span><br>
 								</div>
 								<div class="clear"></div>
@@ -904,6 +916,7 @@ function fun_set_solr_options() {
 
 
 									<span class='status_index_message'></span>
+									<span class='status_debug_message'></span>
 									<span class='status_del_message'></span>
 								</div>
 							</div>
