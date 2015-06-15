@@ -17,7 +17,7 @@ jQuery(document).ready(function () {
     });
 
     // Clean the Solr index
-    jQuery('#solr_delete_index').click(function () {
+    jQuery('#solr_delete_index').click(function (e) {
 
         jQuery('.status_del_message').addClass('loading');
 
@@ -26,13 +26,26 @@ jQuery(document).ready(function () {
         jQuery.ajax({
             url: path + 'admin-ajax.php',
             type: "post",
+            dataType: "json",
             data: {
                 action: 'return_solr_delete_index'
             },
             timeout: 1000 * 3600 * 24,
-            success: function (data1) {
+            success: function (data) {
+
+                // Errors
+                if (data.status != 0 || data.message) {
+                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
+
+                    // Block submit
+                    alert('An error occured.');
+                }
             },
             error: function (req, status, error) {
+                var message = '';
+
+                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>' + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
+
             }
         });
 
@@ -101,9 +114,11 @@ jQuery(document).ready(function () {
 
             success: function (data) {
 
+                //data = JSON.parse(data);
+
                 // Errors
                 if (data.status != 0 || data.message) {
-                    jQuery('.status_index_message').html('An error occured: <br>' + data.message);
+                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
                 }
                 // If indexing completed, stop. Else, call once more.
                 else if (!data.indexing_complete) {
@@ -119,7 +134,7 @@ jQuery(document).ready(function () {
                 if (batch_size > 100) {
                     message = '<br> You could try to decrease your batch size to prevent errors or timeouts.';
                 }
-                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>'  + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
+                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>' + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
 
             },
             timeout: function (req, status, error) {

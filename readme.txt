@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.3
+Current Version: 3.4
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.3
+Stable tag: 3.4
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,10 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.4 =
+* Display errors occurring while deleting the Solr index data.
+* Increase Solr timeout from 5 seconds to 30 seconds.
 
 = 3.3 =
 * Fix curl CA verification error when calling a Solr index protected with https.

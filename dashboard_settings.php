@@ -898,11 +898,12 @@ function fun_set_solr_options() {
 									       id='solr_stop_index_data' value="Stop current indexing"
 									       style="visibility: hidden;"/>
 									<span class='status_index_icon'></span>
-									<span class='status_index_message'></span>
 
 									<input name="solr_delete_index" id="solr_delete_index" type="submit"
 									       class="button-primary wdm-save" value="Empty the Solr index"/>
 
+
+									<span class='status_index_message'></span>
 									<span class='status_del_message'></span>
 								</div>
 							</div>

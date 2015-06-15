@@ -9,6 +9,9 @@ class wp_Solr {
 	// Field queried by default. Necessary to get highlighting good.
 	const DEFAULT_QUERY_FIELD = 'text:';
 
+	// Timeout in seconds when calling Solr
+	const DEFAULT_SOLR_TIMEOUT_IN_SECOND = 30;
+
 	public $client;
 	public $select_query;
 	protected $config;
@@ -46,9 +49,10 @@ class wp_Solr {
 				"endpoint" =>
 					array(
 						"localhost" => array(
-							"host" => $host,
-							"port" => $port,
-							"path" => $path
+							"host"    => $host,
+							"port"    => $port,
+							"path"    => $path,
+							'timeout' => DEFAULT_SOLR_TIMEOUT_IN_SECOND,
 						)
 					)
 			);
@@ -82,7 +86,8 @@ class wp_Solr {
 						'username' => "$username",
 						'password' => "$password",
 						'port'     => "$port",
-						'path'     => "$path"
+						'path'     => "$path",
+						'timeout'  => DEFAULT_SOLR_TIMEOUT_IN_SECOND,
 					)
 				)
 			);
@@ -99,7 +104,7 @@ class wp_Solr {
 
 		$ping = $client->createPing();
 
-		$result = $client->ping( $ping );
+		$result = $client->execute( $ping );
 		$res    = $result->getStatus();
 
 		return $res;
@@ -107,14 +112,6 @@ class wp_Solr {
 	}
 
 	public function delete_documents() {
-
-		$client = $this->client;
-
-		$deleteQuery = $client->createUpdate();
-		$deleteQuery->addDeleteQuery( '*:*' );
-		$deleteQuery->addCommit();
-
-		$result = $client->update( $deleteQuery );
 
 		// Store 0 in # of index documents
 		wp_Solr::update_hosting_option( 'solr_docs', 0 );
@@ -125,7 +122,13 @@ class wp_Solr {
 		// Update nb of documents updated/added
 		wp_Solr::update_hosting_option( 'solr_docs_added_or_updated_last_operation', - 1 );
 
-		return $result->getStatus();
+		// Execute delete query
+		$client      = $this->client;
+		$deleteQuery = $client->createUpdate();
+		$deleteQuery->addDeleteQuery( '*:*' );
+		$deleteQuery->addCommit();
+		$client->execute( $deleteQuery );
+
 
 	}
 
@@ -157,21 +160,6 @@ class wp_Solr {
 	 * How many documents were updated/added during last indexing operation
 	 */
 
-	public function delete_document( $post ) {
-
-		$client = $this->client;
-
-		$deleteQuery = $client->createUpdate();
-		$deleteQuery->addDeleteQuery( 'id:' . $post->ID );
-		$deleteQuery->addCommit();
-
-		$result = $client->update( $deleteQuery );
-
-
-		return $result->getStatus();
-
-	}
-
 	public function get_count_documents() {
 		$solr_options = get_option( 'wdm_solr_conf_data' );
 
@@ -180,12 +168,27 @@ class wp_Solr {
 		$query = $client->createSelect();
 		$query->setQuery( '*:*' );
 		$query->setRows( 0 );
-		$resultset = $client->select( $query );
+		$resultset = $client->execute( $query );
 
 		// Store 0 in # of index documents
 		wp_Solr::update_hosting_option( 'solr_docs', $resultset->getNumFound() );
 
 		return $resultset->getNumFound();
+
+	}
+
+	public function delete_document( $post ) {
+
+		$client = $this->client;
+
+		$deleteQuery = $client->createUpdate();
+		$deleteQuery->addDeleteQuery( 'id:' . $post->ID );
+		$deleteQuery->addCommit();
+
+		$result = $client->execute( $deleteQuery );
+
+
+		return $result->getStatus();
 
 	}
 
@@ -283,7 +286,7 @@ class wp_Solr {
 			$spellChk->setCollate( true );
 			$spellChk->setExtendedResults( true );
 			$spellChk->setCollateExtendedResults( true );
-			$resultset = $client->select( $query );
+			$resultset = $client->execute( $query );
 
 
 			$spellChkResult = $resultset->getSpellcheck();
@@ -331,7 +334,7 @@ class wp_Solr {
 
 			}
 		}
-		$resultset = $client->select( $query );
+		$resultset = $client->execute( $query );
 		if ( $options != '' ) {
 			foreach ( $facets_array as $facet ) {
 
@@ -390,7 +393,7 @@ class wp_Solr {
 		}
 
 
-		$resultset = $client->select( $query );
+		$resultset = $client->execute( $query );
 
 		$found = $resultset->getNumFound();
 
@@ -413,7 +416,7 @@ class wp_Solr {
 		}
 
 		$resultSet = '';
-		$resultSet = $client->select( $query );
+		$resultSet = $client->execute( $query );
 
 
 		$results      = array();
@@ -563,7 +566,7 @@ class wp_Solr {
 		$suggestqry->setCollate( true );
 		$suggestqry->setOnlyMorePopular( true );
 
-		$resultset = $client->suggester( $suggestqry );
+		$resultset = $client->execute( $suggestqry );
 
 		foreach ( $resultset as $term => $termResult ) {
 			// $msg.='<strong>' . $term . '</strong><br/>';
@@ -958,7 +961,7 @@ class wp_Solr {
 			$solarium_extract_query->addParam( 'extractOnly', 'true' );
 			// Try to extract the document body
 			$client                              = $this->client;
-			$result                              = $client->extract( $solarium_extract_query );
+			$result                              = $client->execute( $solarium_extract_query );
 			$response                            = $result->getResponse()->getBody();
 			$attachment_text_extracted_from_tika = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
 			$attachment_text_extracted_from_tika = str_replace( '\n', ' ', $attachment_text_extracted_from_tika );
@@ -984,7 +987,7 @@ class wp_Solr {
 		$client = $this->client;
 		$solarium_update_query->addDocuments( $documents );
 		$solarium_update_query->addCommit();
-		$result = $client->update( $solarium_update_query );
+		$result = $client->execute( $solarium_update_query );
 
 		return $result;
 
