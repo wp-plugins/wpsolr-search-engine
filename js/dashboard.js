@@ -295,7 +295,9 @@ jQuery(document).ready(function () {
                     'sproto': protocol,
                     'shost': host,
                     'sport': port,
-                    'spath': spath
+                    'spath': spath,
+                    'spwd': '',
+                    'skey': ''
                 },
                 success: function (data1) {
 

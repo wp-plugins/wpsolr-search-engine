@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.6
+Current Version: 3.7
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.6
+Stable tag: 3.7
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.7 =
+* Fix random error "undefined index: skey" when setting local Solr hosting.
 
 = 3.6 =
 * Fix JQuery issues on button emptying the index (not working on Safari, false errors displayed elsewhere).
