@@ -911,8 +911,9 @@ function fun_set_solr_options() {
 									       style="visibility: hidden;"/>
 									<span class='status_index_icon'></span>
 
-									<input name="solr_delete_index" id="solr_delete_index" type="submit"
-									       class="button-primary wdm-save" value="Empty the Solr index"/>
+									<input name="solr_delete_index" type="submit" class="button-primary wdm-save"
+									       id="solr_delete_index"
+									       value="Empty the Solr index"/>
 
 
 									<span class='status_index_message'></span>

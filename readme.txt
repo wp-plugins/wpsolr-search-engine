@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.5
+Current Version: 3.6
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.5
+Stable tag: 3.6
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.6 =
+* Fix JQuery issues on button emptying the index (not working on Safari, false errors displayed elsewhere).
 
 = 3.5 =
 * Add a debug checkbox on the indexing admin screen. By activating the debug mode, many details are displayed during the indexing process, to help solve difficult issues with Solr.

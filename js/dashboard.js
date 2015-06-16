@@ -3,6 +3,7 @@ var timeoutHandler;
 var timeoutHandlerIsCleared = false;
 
 jQuery(document).ready(function () {
+
     jQuery(".radio_type").change(function () {
 
         if (jQuery("#self_host").attr("checked")) {
@@ -18,36 +19,41 @@ jQuery(document).ready(function () {
     });
 
     // Clean the Solr index
-    jQuery('#solr_delete_index').click(function (e) {
+    jQuery('#solr_delete_index').click(function () {
 
         jQuery('.status_del_message').addClass('loading');
+        jQuery('#solr_delete_index').attr('value', 'Deleting ... please wait');
 
         path = jQuery('#adm_path').val();
 
-        jQuery.ajax({
+        var request = jQuery.ajax({
             url: path + 'admin-ajax.php',
             type: "post",
             dataType: "json",
+            timeout: 1000 * 3600 * 24,
             data: {
                 action: 'return_solr_delete_index'
-            },
-            timeout: 1000 * 3600 * 24,
-            success: function (data) {
-
-                // Errors
-                if (data.status != 0 || data.message) {
-                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
-
-                    // Block submit
-                    alert('An error occured.');
-                }
-            },
-            error: function (req, status, error) {
-                var message = '';
-
-                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>' + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
-
             }
+        });
+
+        request.done(function (data) {
+
+            // Errors
+            if (data && (data.status != 0 || data.message)) {
+                jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
+
+                // Block submit
+                alert('An error occured.');
+            }
+        });
+
+        request.fail(function (req, status, error) {
+
+            if (error) {
+
+                jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>' + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>');
+            }
+
         });
 
     });
@@ -106,7 +112,7 @@ jQuery(document).ready(function () {
 
         path = jQuery('#adm_path').val();
 
-        return jQuery.ajax({
+        var request = jQuery.ajax({
             url: path + 'admin-ajax.php',
             type: "post",
             data: {
@@ -116,52 +122,50 @@ jQuery(document).ready(function () {
                 is_debug_indexing: is_debug_indexing
             },
             dataType: "json",
-            timeout: 1000 * 3600 * 24,
+            timeout: 1000 * 3600 * 24
+        });
 
-            success: function (data) {
+        request.done(function (data) {
 
-                if (data.debug_text) {
-                    // Debug
-                    jQuery('.status_debug_message').append('<br><br>' + data.debug_text);
+            if (data.debug_text) {
+                // Debug
+                jQuery('.status_debug_message').append('<br><br>' + data.debug_text);
 
-                    if (data.indexing_complete) {
-                        // Freeze the screen to have time to read debug infos
-                        return false;
-                    }
-
+                if (data.indexing_complete) {
+                    // Freeze the screen to have time to read debug infos
+                    return false;
                 }
 
-                if (data.status != 0 || data.message) {
-                    // Errors
-                    jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
+            }
 
-                }
-                else if (!data.indexing_complete) {
+            if (data.status != 0 || data.message) {
+                // Errors
+                jQuery('.status_index_message').html('<br><br>An error occured: <br><br>' + data.message);
 
-                    // If indexing completed, stop. Else, call once more.
-                    timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results, is_debug_indexing), 100);
+            }
+            else if (!data.indexing_complete) {
+
+                // If indexing completed, stop. Else, call once more.
+                timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results, is_debug_indexing), 100);
 
 
-                } else {
-                    jQuery('#solr_stop_index_data').click();
+            } else {
+                jQuery('#solr_stop_index_data').click();
 
-                }
-            },
-            error: function (req, status, error) {
+            }
+        });
 
-                var message = '';
+
+        request.fail(function (req, status, error) {
+
+            if (error) {
 
                 if (batch_size > 100) {
                     message = '<br> You could try to decrease your batch size to prevent errors or timeouts.';
                 }
                 jQuery('.status_index_message').html('<br><br>An error or timeout occured. <br><br>' + '<b>Error code:</b> ' + status + '<br><br>' + '<b>Error message:</b> ' + error + '<br><br>' + message);
-
-            },
-            timeout: function (req, status, error) {
-                jQuery('.status_index_message').html('A timeout occured');
-
-                //timeoutHandler = setTimeout(call_solr_index_data(batch_size, data.nb_results), 100);
             }
+
         });
 
     }
@@ -441,4 +445,5 @@ jQuery(document).ready(function () {
         });
 
 
-});
+})
+;
