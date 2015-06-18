@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.7
+Current Version: 3.8
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.7
+Stable tag: 3.8
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 3.8 =
+* Categories are now indexed even when no custom taxonomy is selected in indexing option.
 
 = 3.7 =
 * Fix random error "undefined index: skey" when setting local Solr hosting.

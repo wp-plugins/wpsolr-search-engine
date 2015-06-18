@@ -920,14 +920,21 @@ class wp_Solr {
 		$cats   = array();
 		$taxo   = $solr_indexing_options['taxonomies'];
 		$aTaxo  = explode( ',', $taxo );
-		$newTax = array( 'category' );
+		$newTax = array( 'category' ); // Add categories by default
+		if ( is_array( $aTaxo ) && count( $aTaxo ) ) {
+		}
 		foreach ( $aTaxo as $a ) {
+
 			if ( substr( $a, ( strlen( $a ) - 4 ), strlen( $a ) ) == "_str" ) {
 				$a = substr( $a, 0, ( strlen( $a ) - 4 ) );
 			}
-			array_push( $newTax, $a );
 
+			// Add only non empty categories
+			if ( strlen( trim( $a ) ) > 0 ) {
+				array_push( $newTax, $a );
+			}
 		}
+
 
 		// Get all taxonomy terms ot this post
 		$term_names = wp_get_post_terms( $post->ID, $newTax, array( "fields" => "names" ) );
