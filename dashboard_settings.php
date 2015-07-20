@@ -311,6 +311,39 @@ function fun_set_solr_options() {
 						} ?>>
 							<h4 class='head_div'>Solr Hosting Connection</h4>
 
+							<div class='wdm_note'>
+								<h4 class='head_div'>Solr hosting subscriptions</h4>
+
+								<div class="wdm_row">
+									<div class='col_left'><a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a>
+										can provide a production ready Solr for WPSOLR.<br>
+										WPSOLR is free, but you can buy and configure a Solr hosting subscription
+										according to your needs
+									</div>
+
+									<div class='col_right'>
+										<input name="gotosolr_plan_yearly_trial"
+										       type="button" class="button-primary wdm-save"
+										       value="Test one month with our yearly trial"
+										       onclick="window.open('https://secure.avangate.com/order/trial.php?PRODS=4642999&amp;QTY=1&amp;PRICES4642999%5BEUR%5D=0&amp;TPERIOD=30&amp;PHASH=bb55c3bd6407e03a8b5fc91358347a4c', '__blank');"
+											/>
+										<input name="gotosolr_plan_yearly"
+										       type="button" class="button-primary wdm-save"
+										       value="Build your yearly plan with your own features"
+										       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4642999&QTY=1&CART=1&CARD=1', '__blank');"
+											/>
+										<input name="gotosolr_plan_monthly"
+										       type="button" class="button-primary wdm-save"
+										       value="Build your monthly plan with your own features"
+										       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4653966&QTY=1&CART=1&CARD=1', '__blank');"
+											/>
+									</div>
+									<div class="clear"></div>
+
+								</div>
+
+							</div>
+
 							<div class="wdm_note">
 
 								<b> If your index url is:</b><br>
@@ -323,6 +356,7 @@ function fun_set_solr_options() {
 								<span style='margin-left:10px'>  <b> path:</b> /solr/e86f82a682564c23b7802b6827f3ccd4.24b7729e02dc47d19c15f1310098f93f</span>
 
 							</div>
+
 							<div class="wdm_row">
 								<div class='solr_error'></div>
 							</div>
