@@ -318,7 +318,8 @@ function fun_set_solr_options() {
 									<div class='col_left'><a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a>
 										can provide a production ready Solr for WPSOLR.<br>
 										WPSOLR is free, but you can buy and configure a Solr hosting subscription
-										according to your needs
+										according to your needs.<br><br>
+										Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress" target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with Gotosolr hosting
 									</div>
 
 									<div class='col_right'>
