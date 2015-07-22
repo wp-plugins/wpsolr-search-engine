@@ -67,12 +67,19 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 == Screenshots ==
 
-1. Download the Solr files solrconfig.xml and schema.xml
-2. Configure your local Solr instance
-3. Configure your cloud Solr instance
-4. Indexing option (part 1)
-5. Indexing option (part 2)
-6. Options to display results
+1. Admin: Download the Solr files solrconfig.xml and schema.xml
+2. Admin: Configure your local Solr instance
+3. Admin: Configure your cloud Solr instance
+4. Admin: Indexing option (part 1)
+5. Admin: Indexing option (part 2)
+6. Admin: Options to display results
+7. Admin: Add facets and control their order
+8. Admin: Integration with the plugin 'groups'
+9. Admin: Integration with the plugin 's2member'
+10. Admin: Solr indexation
+11. Front end: Auto suggestions while typing in search bar
+12. Front end: Facets are displayed
+13. Front end: Did you mean ?
 
 == Changelog ==
 
