@@ -70,6 +70,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 1. Download the Solr files solrconfig.xml and schema.xml
 2. Configure your local Solr instance
 3. Configure your cloud Solr instance
+4. Indexing option (part 1)
+5. Indexing option (part 2)
+6. Options to display results
 
 == Changelog ==
 
