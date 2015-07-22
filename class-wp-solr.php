@@ -52,7 +52,7 @@ class wp_Solr {
 							"host"    => $host,
 							"port"    => $port,
 							"path"    => $path,
-							'timeout' => DEFAULT_SOLR_TIMEOUT_IN_SECOND,
+							'timeout' => self::DEFAULT_SOLR_TIMEOUT_IN_SECOND,
 						)
 					)
 			);
@@ -87,7 +87,7 @@ class wp_Solr {
 						'password' => "$password",
 						'port'     => "$port",
 						'path'     => "$path",
-						'timeout'  => DEFAULT_SOLR_TIMEOUT_IN_SECOND,
+						'timeout'  => self::DEFAULT_SOLR_TIMEOUT_IN_SECOND,
 					)
 				)
 			);

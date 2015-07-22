@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 3.9
+Current Version: 4.0
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 3.9
+Stable tag: 4.0
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -67,6 +67,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 
 == Changelog ==
+
+= 4.0 =
+* Fix constant error DEFAULT_SOLR_TIMEOUT_IN_SECOND.
 
 = 3.9 =
 * Optional Cloud Solr hosting plans can now be chosen by those who are not familiar with Solr installation and configuration in a production environment.
