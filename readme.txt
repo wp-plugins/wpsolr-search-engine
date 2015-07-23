@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.1
+Current Version: 4.2
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.1
+Stable tag: 4.2
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -80,11 +80,16 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 11. Front end: Auto suggestions while typing in search bar
 12. Front end: Facets are displayed
 13. Front end: Did you mean ?
+14. Admin: Select attachment types to index
 
 == Changelog ==
 
+= 4.2 =
+* You can now select which attachment type(s) you want to index (see screenshot 14).
+* WARNING: If you already indexed attachments, you MUST now select which types you want, or the next time you start the indexing process, no attachments will be indexed.
+
 = 4.1 =
-* Attachements added and deleted are now synchronized with Solr in real-time (no need to sart the Solr indexing process).
+* Attachments added and deleted are now synchronized with Solr in real-time (no need to sart the Solr indexing process).
 * Fix message "Undefined variable: res_final".
 * Fix message "Notice: ob_flush(): failed to flush buffer. No buffer to flush" in Solr operations ajax calls.
 

@@ -257,7 +257,7 @@ function fun_set_solr_options() {
 
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_host]'
 								                              id='solr_host'
-								                              value="<?php echo empty( $solr_options['solr_host'] ) ? 'localhost' : $solr_options['solr_host'];?>">
+								                              value="<?php echo empty( $solr_options['solr_host'] ) ? 'localhost' : $solr_options['solr_host']; ?>">
 									<span class='host_err'></span></div>
 								<div class="clear"></div>
 							</div>
@@ -265,7 +265,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Solr Port</div>
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_port]'
 								                              id='solr_port'
-								                              value="<?php echo empty( $solr_options['solr_port'] ) ? '8983' : $solr_options['solr_port'];?>">
+								                              value="<?php echo empty( $solr_options['solr_port'] ) ? '8983' : $solr_options['solr_port']; ?>">
 									<span class='port_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -274,7 +274,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Solr Path</div>
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_path]'
 								                              id='solr_path'
-								                              value="<?php echo empty( $solr_options['solr_path'] ) ? '/solr' : $solr_options['solr_path'];?>">
+								                              value="<?php echo empty( $solr_options['solr_path'] ) ? '/solr' : $solr_options['solr_path']; ?>">
 									<span class='path_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -287,13 +287,13 @@ function fun_set_solr_options() {
 									       class="button-primary wdm-save" value="Check Solr Status, Then Save"/>
                                             <span>
                                                 <img
-	                                                src='<?php echo plugins_url( 'images/gif-load_cir.gif', __FILE__ )?>'
+	                                                src='<?php echo plugins_url( 'images/gif-load_cir.gif', __FILE__ ) ?>'
 	                                                style='height:18px;width:18px;margin-top: 10px;display: none'
 	                                                class='img-load'/>
-                                                <img src='<?php echo plugins_url( 'images/success.png', __FILE__ )?>'
+                                                <img src='<?php echo plugins_url( 'images/success.png', __FILE__ ) ?>'
                                                      style='height:18px;width:18px;margin-top: 10px;display: none'
                                                      class='img-succ'/>
-                                                <img src='<?php echo plugins_url( 'images/warning.png', __FILE__ )?>'
+                                                <img src='<?php echo plugins_url( 'images/warning.png', __FILE__ ) ?>'
                                                      style='height:18px;width:18px;margin-top: 10px;display: none'
                                                      class='img-err'/>
                                             </span>
@@ -319,7 +319,9 @@ function fun_set_solr_options() {
 										can provide a production ready Solr for WPSOLR.<br>
 										WPSOLR is free, but you can buy and configure a Solr hosting subscription
 										according to your needs.<br><br>
-										Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress" target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with Gotosolr hosting
+										Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress"
+										             target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with
+										Gotosolr hosting
 									</div>
 
 									<div class='col_right'>
@@ -392,7 +394,7 @@ function fun_set_solr_options() {
 
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_host_goto]'
 								                              id='gtsolr_host'
-								                              value="<?php echo empty( $solr_options['solr_host_goto'] ) ? 'localhost' : $solr_options['solr_host_goto'];?>">
+								                              value="<?php echo empty( $solr_options['solr_host_goto'] ) ? 'localhost' : $solr_options['solr_host_goto']; ?>">
 									<span class='ghost_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -401,7 +403,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Solr Port</div>
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_port_goto]'
 								                              id='gtsolr_port'
-								                              value="<?php echo empty( $solr_options['solr_port_goto'] ) ? '8983' : $solr_options['solr_port_goto'];?>">
+								                              value="<?php echo empty( $solr_options['solr_port_goto'] ) ? '8983' : $solr_options['solr_port_goto']; ?>">
 									<span class='gport_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -410,7 +412,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Solr Path</div>
 								<div class='col_right'><input type='text' name='wdm_solr_conf_data[solr_path_goto]'
 								                              id='gtsolr_path'
-								                              value="<?php echo empty( $solr_options['solr_path_goto'] ) ? '/solr' : $solr_options['solr_path_goto'];?>">
+								                              value="<?php echo empty( $solr_options['solr_path_goto'] ) ? '/solr' : $solr_options['solr_path_goto']; ?>">
 									<span class='gpath_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -419,7 +421,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Key</div>
 								<div class='col_right'>
 									<input type='text' name='wdm_solr_conf_data[solr_key_goto]' id='gtsolr_key'
-									       value="<?php echo empty( $solr_options['solr_key_goto'] ) ? '' : $solr_options['solr_key_goto'];?>">
+									       value="<?php echo empty( $solr_options['solr_key_goto'] ) ? '' : $solr_options['solr_key_goto']; ?>">
 									<span class='gkey_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -428,7 +430,7 @@ function fun_set_solr_options() {
 								<div class='col_left'>Secret</div>
 								<div class='col_right'>
 									<input type='text' name='wdm_solr_conf_data[solr_secret_goto]' id='gtsolr_secret'
-									       value="<?php echo empty( $solr_options['solr_secret_goto'] ) ? '' : $solr_options['solr_secret_goto'];?>">
+									       value="<?php echo empty( $solr_options['solr_secret_goto'] ) ? '' : $solr_options['solr_secret_goto']; ?>">
 									<span class='gsec_err'></span>
 								</div>
 								<div class="clear"></div>
@@ -437,14 +439,14 @@ function fun_set_solr_options() {
 								<div class="submit">
 									<input name="check_solr_status_third" id='check_solr_status_third' type="button"
 									       class="button-primary wdm-save" value="Check Solr Status, Then Save"/> <span><img
-											src='<?php echo plugins_url( 'images/gif-load_cir.gif', __FILE__ )?>'
+											src='<?php echo plugins_url( 'images/gif-load_cir.gif', __FILE__ ) ?>'
 											style='height:18px;width:18px;margin-top: 10px;display: none'
 											class='img-load'>
                                             
-                                             <img src='<?php echo plugins_url( 'images/success.png', __FILE__ )?>'
+                                             <img src='<?php echo plugins_url( 'images/success.png', __FILE__ ) ?>'
                                                   style='height:18px;width:18px;margin-top: 10px;display: none'
                                                   class='img-succ'/>
-                                                <img src='<?php echo plugins_url( 'images/warning.png', __FILE__ )?>'
+                                                <img src='<?php echo plugins_url( 'images/warning.png', __FILE__ ) ?>'
                                                      style='height:18px;width:18px;margin-top: 10px;display: none'
                                                      class='img-err'/></span>
 								</div>
@@ -510,9 +512,9 @@ function fun_set_solr_options() {
 											<div class='col_left'>Display suggestions (Did you mean?)</div>
 											<div class='col_right'>
 												<input type='checkbox'
-												       name='wdm_solr_res_data[<?php echo 'spellchecker'?>]'
+												       name='wdm_solr_res_data[<?php echo 'spellchecker' ?>]'
 												       value='spellchecker'
-													<?php checked( 'spellchecker', $solr_res_options['spellchecker'] );?>>
+													<?php checked( 'spellchecker', $solr_res_options['spellchecker'] ); ?>>
 											</div>
 											<div class="clear"></div>
 										</div>
@@ -521,7 +523,7 @@ function fun_set_solr_options() {
 											<div class='col_right'>
 												<input type='checkbox' name='wdm_solr_res_data[res_info]'
 												       value='res_info'
-													<?php checked( 'res_info', $solr_res_options['res_info'] );?>>
+													<?php checked( 'res_info', $solr_res_options['res_info'] ); ?>>
 											</div>
 											<div class="clear"></div>
 										</div>
@@ -530,7 +532,7 @@ function fun_set_solr_options() {
 											<div class='col_right'>
 												<input type='checkbox' name='wdm_solr_res_data[default_search]'
 												       value='1'
-													<?php checked( '1', $solr_res_options['default_search'] );?>>
+													<?php checked( '1', $solr_res_options['default_search'] ); ?>>
 											</div>
 											<div class="clear"></div>
 										</div>
@@ -539,7 +541,7 @@ function fun_set_solr_options() {
 											<div class='col_right'>
 												<input type='text' id='number_of_res' name='wdm_solr_res_data[no_res]'
 												       placeholder="Enter a Number"
-												       value="<?php echo empty( $solr_res_options['no_res'] ) ? '20' : $solr_res_options['no_res'];?>">
+												       value="<?php echo empty( $solr_res_options['no_res'] ) ? '20' : $solr_res_options['no_res']; ?>">
 												<span class='res_err'></span><br>
 											</div>
 											<div class="clear"></div>
@@ -549,7 +551,7 @@ function fun_set_solr_options() {
 											<div class='col_right'>
 												<input type='text' id='number_of_fac' name='wdm_solr_res_data[no_fac]'
 												       placeholder="Enter a Number"
-												       value="<?php echo empty( $solr_res_options['no_fac'] ) ? '20' : $solr_res_options['no_fac'];?>"><span
+												       value="<?php echo empty( $solr_res_options['no_fac'] ) ? '20' : $solr_res_options['no_fac']; ?>"><span
 													class='fac_err'></span> <br>
 											</div>
 											<div class="clear"></div>
@@ -572,7 +574,7 @@ function fun_set_solr_options() {
 						case 'index_opt':
 
 
-							$posts      = get_post_types();
+							$posts                     = get_post_types();
 							$args       = array(
 								'public'   => true,
 								'_builtin' => false
@@ -592,11 +594,12 @@ function fun_set_solr_options() {
                                                                     ORDER BY meta_key" );
 							$post_types = array();
 							foreach ( $posts as $ps ) {
-								if ( $ps != 'attachement' && $ps != 'revision' && $ps != 'nav_menu_item' ) {
+								if ( $ps != 'attachment' && $ps != 'revision' && $ps != 'nav_menu_item' ) {
 									array_push( $post_types, $ps );
 								}
 							}
 
+							$allowed_attachments_types = get_allowed_mime_types();
 
 							?>
 							<div id="solr-indexing-options" class="wdm-vertical-tabs-content">
@@ -604,10 +607,11 @@ function fun_set_solr_options() {
 									<?php
 									settings_fields( 'solr_form_options' );
 									$solr_options = get_option( 'wdm_solr_form_data', array(
-										'comments'    => 0,
-										'p_types'     => '',
-										'taxonomies'  => '',
-										'cust_fields' => ''
+										'comments'         => 0,
+										'p_types'          => '',
+										'taxonomies'       => '',
+										'cust_fields'      => '',
+										'attachment_types' => ''
 									) );
 									?>
 
@@ -621,6 +625,7 @@ function fun_set_solr_options() {
 											site, which you want to load in your Solr index.
 
 										</div>
+
 										<div class="wdm_row">
 											<div class='col_left'>Post types to be indexed</div>
 											<div class='col_right'>
@@ -632,13 +637,33 @@ function fun_set_solr_options() {
 													<input type='checkbox' name='post_tys' value='<?php echo $type ?>'
 														<?php if ( strpos( $post_types_opt, $type ) !== false ) { ?> checked <?php } ?>> <?php echo $type ?>
 													<br>
-												<?php
+													<?php
 												}
 												?>
 
 											</div>
 											<div class="clear"></div>
 										</div>
+
+										<div class="wdm_row">
+											<div class='col_left'>Attachment types to be indexed</div>
+											<div class='col_right'>
+												<input type='hidden' name='wdm_solr_form_data[attachment_types]'
+												       id='attachment_types'>
+												<?php
+												$attachment_types_opt = $solr_options['attachment_types'];
+												foreach ( $allowed_attachments_types as $type ) {
+													?>
+													<input type='checkbox' name='attachment_types' value='<?php echo $type ?>'
+														<?php if ( strpos( $attachment_types_opt, $type ) !== false ) { ?> checked <?php } ?>> <?php echo $type ?>
+													<br>
+													<?php
+												}
+												?>
+											</div>
+											<div class="clear"></div>
+										</div>
+
 										<div class="wdm_row">
 											<div class='col_left'>Custom taxonomies to be indexed</div>
 											<div class='col_right'>
@@ -653,9 +678,9 @@ function fun_set_solr_options() {
 
 															<input type='checkbox' name='taxon'
 															       value='<?php echo $type . "_str" ?>'
-															<?php if ( strpos( $tax_types_opt, $type . "_str" ) !== false ) { ?> checked <?php } ?>//end here
-															> <?php echo $type ?> <br>
-														<?php
+																<?php if ( strpos( $tax_types_opt, $type . "_str" ) !== false ) { ?> checked <?php } ?>
+																> <?php echo $type ?> <br>
+															<?php
 														}
 
 													} else {
@@ -665,6 +690,7 @@ function fun_set_solr_options() {
 											</div>
 											<div class="clear"></div>
 										</div>
+
 										<div class="wdm_row">
 											<div class='col_left'>Custom Fields to be indexed</div>
 
@@ -683,7 +709,7 @@ function fun_set_solr_options() {
 															       value='<?php echo $key . "_str" ?>'
 																<?php if ( strpos( $field_types_opt, $key . "_str" ) !== false ) { ?> checked <?php } ?>> <?php echo $key ?>
 															<br>
-														<?php
+															<?php
 														}
 
 													} else {
@@ -694,11 +720,12 @@ function fun_set_solr_options() {
 											</div>
 											<div class="clear"></div>
 										</div>
+
 										<div class="wdm_row">
 											<div class='col_left'>Index Comments</div>
 											<div class='col_right'>
 												<input type='checkbox' name='wdm_solr_form_data[comments]'
-												       value='1'  <?php checked( '1', $solr_options['comments'] );?>>
+												       value='1' <?php checked( '1', $solr_options['comments'] ); ?>>
 
 											</div>
 											<div class="clear"></div>
@@ -708,7 +735,7 @@ function fun_set_solr_options() {
 											<div class='col_right'>
 												<input type='text' name='wdm_solr_form_data[exclude_ids]'
 												       placeholder="Comma separated ID's list"
-												       value="<?php echo empty( $solr_options['exclude_ids'] ) ? '' : $solr_options['exclude_ids'];?>">
+												       value="<?php echo empty( $solr_options['exclude_ids'] ) ? '' : $solr_options['exclude_ids']; ?>">
 												<br>
 												(Comma separated ids list)
 											</div>
@@ -906,7 +933,7 @@ function fun_set_solr_options() {
 									are sent to the index.</p>
 
 								<p>So, the first operation will index all documents, by batches of
-									<b><?php echo $batch_size;?></b> documents.</p>
+									<b><?php echo $batch_size; ?></b> documents.</p>
 
 								<p>If a <b>timeout</b> occurs, you just have to click on the button again: the process
 									will restart from where it stopped.</p>
@@ -920,7 +947,7 @@ function fun_set_solr_options() {
 								<div class='col_right'>
 									<input type='text' id='batch_size' name='wdm_solr_operations_data[batch_size]'
 									       placeholder="Enter a Number"
-									       value="<?php echo $batch_size;?>">
+									       value="<?php echo $batch_size; ?>">
 									<span class='res_err'></span><br>
 								</div>
 								<div class="clear"></div>
@@ -931,7 +958,7 @@ function fun_set_solr_options() {
 									       id='is_debug_indexing'
 									       name='wdm_solr_operations_data[is_debug_indexing]'
 									       value='is_debug_indexing'
-										<?php checked( 'is_debug_indexing', $solr_operations_options['is_debug_indexing'] );?>>
+										<?php checked( 'is_debug_indexing', $solr_operations_options['is_debug_indexing'] ); ?>>
 									<span class='res_err'></span><br>
 								</div>
 								<div class="clear"></div>
@@ -969,7 +996,7 @@ function fun_set_solr_options() {
 
 
 	</div>
-<?php
+	<?php
 
 
 }

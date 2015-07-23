@@ -620,28 +620,25 @@ class wp_Solr {
 
 		$solr_indexing_options = get_option( 'wdm_solr_form_data' );
 
-		$post_types = $solr_indexing_options['p_types'];
+		$post_types = str_replace( ",", "','", $solr_indexing_options['p_types'] );
 		$exclude_id = $solr_indexing_options['exclude_ids'];
 		$ex_ids     = array();
 		$ex_ids     = explode( ',', $exclude_id );
-		$posts      = explode( ',', $post_types );
 
 		// Build the WHERE clause
-		$where_p = '';
-		foreach ( $posts as $post_type ) {
-			if ( $post_type != 'attachment' ) {
-				// Where clause for *p*osts
-				$where_p .= " post_type='$post_type' OR";
-			} else {
-				// Where clause for *a*ttachments
-				// We check the publish status of the parent post later on, if post_status='inherit'
-				$where_a = "( post_status='publish' OR post_status='inherit' ) AND post_type='attachment'";
-			}
+
+		// Where clause for post types
+		$where_p = " post_type in ('$post_types') ";
+
+		// Build the attachment types clause
+		$attachment_types = str_replace( ",", "','", $solr_indexing_options['attachment_types'] );
+		if ( isset( $attachment_types ) && ( $attachment_types != '' ) ) {
+			$where_a = " ( post_status='publish' OR post_status='inherit' ) AND post_type='attachment' AND post_mime_type in ('$attachment_types') ";
 		}
+
+
 		if ( isset( $where_p ) ) {
-			// Remove the last " OR"
-			$where_p = substr( $where_p, 0, - 3 );
-			$where   = "post_status='publish' AND ( $where_p )";
+			$where = "post_status='publish' AND ( $where_p )";
 			if ( isset( $where_a ) ) {
 				$where = "( $where ) OR ( $where_a )";
 			}
