@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.0
+Current Version: 4.1
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.0
+Stable tag: 4.1
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -82,6 +82,11 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 13. Front end: Did you mean ?
 
 == Changelog ==
+
+= 4.1 =
+* Attachements added and deleted are now synchronized with Solr in real-time (no need to sart the Solr indexing process).
+* Fix message "Undefined variable: res_final".
+* Fix message "Notice: ob_flush(): failed to flush buffer. No buffer to flush" in Solr operations ajax calls.
 
 = 4.0 =
 * Fix constant error DEFAULT_SOLR_TIMEOUT_IN_SECOND.

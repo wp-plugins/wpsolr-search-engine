@@ -825,7 +825,7 @@ class wp_Solr {
 			break;
 		}
 
-		$status = ! $res_final ? 0 : $res_final->getStatus();
+		$status = ! isset( $res_final ) ? 0 : $res_final->getStatus();
 
 		return $res_final = array(
 			'nb_results'        => $doc_count,
@@ -1057,7 +1057,7 @@ class wp_Solr {
 			$attachment_text_extracted_from_tika = preg_replace( '/^.*?\<body\>(.*?)\<\/body\>.*$/i', '\1', $response );
 			$attachment_text_extracted_from_tika = str_replace( '\n', ' ', $attachment_text_extracted_from_tika );
 		} catch ( Exception $e ) {
-			throw new Exception( 'Error on attached file "' . $post->post_title . '": <br/>' . $e->getMessage(), $e->getCode() );
+			throw new Exception( 'Error on attached file ' . $post->post_title . ' (ID: ' . $post->ID . ')' . ': ' . $e->getMessage(), $e->getCode() );
 		}
 
 		// Last chance to customize the tika extracted attachment body

@@ -390,9 +390,6 @@ function return_solr_index_data() {
 
 	}
 
-	ob_flush();
-	flush();
-
 	die();
 }
 
@@ -422,9 +419,6 @@ function return_solr_delete_index() {
 		);
 
 	}
-
-	ob_flush();
-	flush();
 
 	die();
 }

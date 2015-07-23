@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Apache Solr search by WPSOLR
  * Description: Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
- * Version: 4.0
+ * Version: 4.1
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -85,6 +85,37 @@ function add_remove_document_to_solr_index( $post_id, $post, $update ) {
 }
 
 add_action( 'save_post', 'add_remove_document_to_solr_index', 10, 3 );
+
+/*
+ * Add an attachment to Solr
+ */
+add_action( 'add_attachment', 'add_attachment_to_solr_index', 10, 3 );
+function add_attachment_to_solr_index( $attachment_id ) {
+
+	// Index the new attachment
+
+	$solr = new wp_Solr();
+
+	$solr->index_data( 1, get_post( $attachment_id ) );
+
+	set_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice', 'Attachment added to Solr' );
+}
+
+/*
+ * Delete an attachment from Solr
+ */
+add_action( 'delete_attachment', 'delete_attachment_to_solr_index', 10, 3 );
+function delete_attachment_to_solr_index( $attachment_id ) {
+
+	// Remove the attachment from Solr index
+
+	$solr = new wp_Solr();
+
+	$solr->delete_document( get_post( $attachment_id ) );
+
+	set_transient( get_current_user_id() . 'updated_solr_post_save_admin_notice', 'Attachment deleted from Solr' );
+}
+
 
 /* Replace WordPress search
  * Default WordPress will be replaced with Solr search
