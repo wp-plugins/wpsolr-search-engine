@@ -19,6 +19,21 @@ class wp_Solr {
 	// Array of active extension objects
 	protected $wpsolr_extensions;
 
+	// Do not change - Sort by most relevant
+	const SORT_CODE_BY_RELEVANCY_DESC = 'sort_by_relevancy_desc';
+
+	// Do not change - Sort by newest
+	const SORT_CODE_BY_DATE_DESC = 'sort_by_date_desc';
+
+	// Do not change - Sort by oldest
+	const SORT_CODE_BY_DATE_ASC = 'sort_by_date_asc';
+
+	// Do not change - Sort by least comments
+	const SORT_CODE_BY_NUMBER_COMMENTS_ASC = 'sort_by_number_comments_asc';
+
+	// Do not change - Sort by most comments
+	const SORT_CODE_BY_NUMBER_COMMENTS_DESC = 'sort_by_number_comments_desc';
+
 	public function __construct() {
 
 		// Load active extensions
@@ -95,6 +110,69 @@ class wp_Solr {
 
 		$this->client = new Solarium\Client( $config );
 
+	}
+
+
+	/**
+	 * Get all sort by options available
+	 *
+	 * @param string $sort_code_to_retrieve
+	 *
+	 * @return array
+	 */
+	public static function get_sort_options() {
+
+		$results = array(
+
+			array(
+				code  => self::SORT_CODE_BY_RELEVANCY_DESC,
+				label => 'Most relevant',
+			),
+			array(
+				code  => self::SORT_CODE_BY_DATE_DESC,
+				label => 'Newest',
+			),
+			array(
+				code  => self::SORT_CODE_BY_DATE_ASC,
+				label => 'Oldest',
+			),
+			array(
+				code  => self::SORT_CODE_BY_NUMBER_COMMENTS_DESC,
+				label => 'More comments',
+			),
+			array(
+				code  => self::SORT_CODE_BY_NUMBER_COMMENTS_ASC,
+				label => 'Less comments',
+			),
+		);
+
+		return $results;
+	}
+
+	/**
+	 * Get all sort by options available
+	 *
+	 * @param string $sort_code_to_retrieve
+	 *
+	 * @return array
+	 */
+	public static function get_sort_option_from_code( $sort_code_to_retrieve, $sort_options = null ) {
+
+		if ( $sort_options == null ) {
+			$sort_options = self::get_sort_options();
+		}
+
+		if ( $sort_code_to_retrieve != null ) {
+			foreach ( $sort_options as $sort ) {
+
+				if ( $sort[ code ] === $sort_code_to_retrieve ) {
+					return $sort;
+				}
+			}
+		}
+
+
+		return null;
 	}
 
 	public function get_solr_status() {
@@ -253,29 +331,24 @@ class wp_Solr {
 
 
 		switch ( $sort ) {
-			case 'new':
-				$sort_field = 'date';
-				$sort_value = $query::SORT_DESC;
+			case self::SORT_CODE_BY_DATE_DESC:
+				$query->addSort( 'date', $query::SORT_DESC );
 				break;
-			case 'old':
-				$sort_field = 'date';
-				$sort_value = $query::SORT_ASC;
+			case self::SORT_CODE_BY_DATE_ASC:
+				$query->addSort( 'date', $query::SORT_ASC );
 				break;
-			case 'mcomm';
-				$sort_field = 'numcomments';
-				$sort_value = $query::SORT_DESC;
+			case self::SORT_CODE_BY_NUMBER_COMMENTS_DESC:
+				$query->addSort( 'numcomments', $query::SORT_DESC );
 				break;
-			case 'lcomm':
-				$sort_field = 'numcomments';
-				$sort_value = $query::SORT_ASC;
+			case self::SORT_CODE_BY_NUMBER_COMMENTS_ASC:
+				$query->addSort( 'numcomments', $query::SORT_ASC );
 				break;
+			case self::SORT_CODE_BY_RELEVANCY_DESC:
 			default:
-				$sort_field = 'id';
-				$sort_value = $query::SORT_DESC;
+				// None is relevancy
 				break;
 		}
 
-		$query->addSort( $sort_field, $sort_value );
 		$query->setQueryDefaultOperator( 'AND' );
 
 

@@ -164,6 +164,7 @@ background-size: 98%;
 	cursor: move;
 	background: #f1f1f1;
 }
+
 .plus_icon{
 	height: 16px;
 	width: 16px;
@@ -177,6 +178,20 @@ background-size: 98%;
 	float: right;
 	cursor: pointer;
 	
+}
+.plus_icon_sort{
+	height: 16px;
+	width: 16px;
+	float: right;
+	cursor: pointer
+}
+.minus_icon_sort
+{
+	height: 16px;
+	width: 16px;
+	float: right;
+	cursor: pointer;
+
 }
 .wdm-instructions{
 	list-style: outside square;

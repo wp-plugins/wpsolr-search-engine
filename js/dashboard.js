@@ -203,8 +203,8 @@ jQuery(document).ready(function () {
 
 
     });
-    jQuery('#save_selected_options_form').click(function () {
 
+    jQuery('#save_facets_options_form').click(function () {
 
         result = '';
         jQuery(".facet_selected").each(function () {
@@ -214,6 +214,19 @@ jQuery(document).ready(function () {
 
         jQuery("#select_fac").val(result);
     })
+
+    jQuery('#save_sort_options_form').click(function () {
+
+        result = '';
+        jQuery(".sort_selected").each(function () {
+            result += jQuery(this).attr('id') + ",";
+        });
+        result = result.substring(0, result.length - 1);
+
+        jQuery("#select_sort").val(result);
+
+    })
+
     jQuery('#save_selected_res_options_form').click(function () {
         num_of_res = jQuery('#number_of_res').val();
         num_of_fac = jQuery('#number_of_fac').val();
@@ -440,6 +453,7 @@ jQuery(document).ready(function () {
         jQuery(this).hide();
         jQuery(this).siblings().css('display', 'inline');
     })
+
     jQuery("#sortable1").sortable(
         {
             connectWith: ".connectedSortable",
@@ -452,6 +466,36 @@ jQuery(document).ready(function () {
                     result = result.substring(0, result.length - 1);
 
                     jQuery("#select_fac").val(result);
+                });
+            }
+        });
+
+
+    jQuery('.plus_icon_sort').click(function () {
+        jQuery(this).parent().addClass('sort_selected');
+        jQuery(this).hide();
+        jQuery(this).siblings().css('display', 'inline');
+    })
+
+    jQuery('.minus_icon_sort').click(function () {
+        jQuery(this).parent().removeClass('sort_selected');
+        jQuery(this).hide();
+        jQuery(this).siblings().css('display', 'inline');
+    })
+
+    jQuery("#sortable_sort").sortable(
+        {
+            connectWith: ".connectedSortable_sort",
+            stop: function (event, ui) {
+                jQuery('.connectedSortable_sort').each(function () {
+                    result = "";
+                    jQuery(this).find(".sort_selected").each(function () {
+                        result += jQuery(this).attr('id') + ",";
+                    });
+                    result = result.substring(0, result.length - 1);
+
+                    jQuery("#select_sort").val(result);
+
                 });
             }
         });

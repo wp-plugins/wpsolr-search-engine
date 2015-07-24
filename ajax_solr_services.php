@@ -90,9 +90,13 @@ function fun_search_indexed_data() {
 		$options = $fac_opt['facets'];
 		if ( $res == 0 ) {
 
+			// Use default sort
+			$sort_opt     = get_option( 'wdm_solr_sortby_data' );
+			$sort_default = $sort_opt['sort_default'];
+
 			try {
 
-				$final_result = $solr->get_search_results( $search_que, '', '', '', '' );
+				$final_result = $solr->get_search_results( $search_que, '', '', $sort_default );
 			} catch ( Exception $e ) {
 
 				$message = $e->getMessage();
@@ -105,15 +109,30 @@ function fun_search_indexed_data() {
 			} else {
 				echo '<div class="wdm_resultContainer">
                     <div class="wdm_list">';
-				$sort_select = "<label class='wdm_label'>Sort By</label>
-                                    <select class='select_field'>
-                                    <option value='new'>Newest</option>
-                                    <option value='old'>Oldest</option>
-                                    <option value='mcomm'>Most Comments</option>
-                                    <option value='lcomm'>Least Comments</option>
-                                    </select>";
 
-				echo '<div>' . $sort_select . '</div>';
+				// Display the sort list
+				$all_sort_options = get_option( 'wdm_solr_sortby_data' );
+				if ( isset( $all_sort_options ) && ( $all_sort_options != '' ) ) {
+					$selected_sort_values = $all_sort_options['sort'];
+					if ( isset( $selected_sort_values ) && ( $selected_sort_values != '' ) ) {
+
+						$sort_select = "<label class='wdm_label'>Sort By</label>
+                                    <select class='select_field'>";
+
+						// Add options
+						$sort_options = wp_Solr::get_sort_options();
+						foreach ( explode( ',', $selected_sort_values ) as $sort_code ) {
+							$sort       = wp_Solr::get_sort_option_from_code( $sort_code, $sort_options );
+							$sort_label = $sort == null ? $sort_code : $sort['label'];
+							$selected   = $sort_default == $sort['code'] ? 'selected' : '';
+							$sort_select .= "<option value='$sort_code' $selected>$sort_label</option>";
+						}
+
+						$sort_select .= "</select>";
+
+						echo '<div>' . $sort_select . '</div>';
+					}
+				}
 
 				$res_array = $final_result[3];
 				if ( $final_result[1] != '0' ) {
