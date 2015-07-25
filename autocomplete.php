@@ -17,13 +17,17 @@ function wdm_return_solr_rows() {
 			$postix = '';
 		}
 
-		if ( $_SESSION[ $host_type ] == '' ) {
+		// Create session cache is necessary
+		if ( !isset( $_SESSION[ $host_type ] ) ) {
 			$_SESSION[ 'wdm-host' . $postix ]  = $solr_options[ 'solr_host' . $postix ];
 			$_SESSION[ 'wdm-port' . $postix ]  = $solr_options[ 'solr_port' . $postix ];
 			$_SESSION[ 'wdm-path' . $postix ]  = $solr_options[ 'solr_path' . $postix ];
 			$_SESSION[ 'wdm-user' . $postix ]  = $solr_options[ 'solr_key' . $postix ];
 			$_SESSION[ 'wdm-pwd' . $postix ]   = $solr_options[ 'solr_secret' . $postix ];
 			$_SESSION[ 'wdm-proto' . $postix ] = $solr_options[ 'solr_protocol' . $postix ];
+
+			// Cache is created
+			$_SESSION[ $host_type ] = true;
 		}
 
 		$host     = $_SESSION[ 'wdm-host' . $postix ];

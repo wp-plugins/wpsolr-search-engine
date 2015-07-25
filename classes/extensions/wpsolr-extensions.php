@@ -164,9 +164,7 @@ class WpSolrExtensions {
 
 			$custom_fields = explode( ',', $array_wdm_solr_form_data['cust_fields'] );
 
-			$custom_field_capabilities = $custom_fields[ $custom_field_name ];
-
-			if ( ! isset( $custom_field_capabilities ) ) {
+			if ( ! isset( $custom_fields[ $custom_field_name ] ) ) {
 
 				$custom_fields[ $custom_field_name ] = $custom_field_name;
 

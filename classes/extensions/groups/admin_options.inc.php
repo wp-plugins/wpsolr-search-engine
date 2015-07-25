@@ -85,7 +85,7 @@ $custom_field_for_indexing_name = WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_C
 						<input type='checkbox'
 						       name='wdm_solr_extension_groups_data[is_extension_active]'
 						       value='is_extension_active'
-							<?php checked( 'is_extension_active', $solr_extension_groups_options['is_extension_active'] ); ?>>
+							<?php checked( 'is_extension_active', isset($solr_extension_groups_options['is_extension_active']) ? $solr_extension_groups_options['is_extension_active'] : '' ); ?>>
 					</div>
 					<div class="clear"></div>
 				</div>

@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.3
+Current Version: 4.4
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.3
+Stable tag: 4.4
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -85,9 +85,12 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 
 == Changelog ==
 
+= 4.4 =
+* Fix several admin and front-end php notices
+
 = 4.3 =
 * Screenshot 15. The "Sort by" items list is configurable. You can choose not to diplay it at all, which elements it contains and in which order, which element is applied by default.
-WARNING: Your front-end sort list will not be displayed, until you configure it.
+* WARNING: Your front-end sort list will not be displayed, until you configure it.
 
 = 4.2 =
 * You can now select which attachment type(s) you want to index (see screenshot 14).

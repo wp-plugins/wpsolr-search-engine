@@ -727,7 +727,7 @@ function fun_set_solr_options() {
 											<div class='col_left'>Index Comments</div>
 											<div class='col_right'>
 												<input type='checkbox' name='wdm_solr_form_data[comments]'
-												       value='1' <?php checked( '1', $solr_options['comments'] ); ?>>
+												       value='1' <?php checked( '1', isset( $solr_options['comments'] ) ? $solr_options['comments'] : '' ); ?>>
 
 											</div>
 											<div class="clear"></div>
@@ -807,8 +807,6 @@ function fun_set_solr_options() {
 										<div class="wdm_row">
 											<div class='avail_fac'>
 												<h4>Available items for facets</h4>
-												<input type='hidden' id='checked_options' name='checked_options'
-												       value='<?php echo $checked_fls ?>'>
 												<input type='hidden' id='select_fac' name='wdm_solr_facet_data[facets]'
 												       value='<?php echo $selected_facets_value ?>'>
 
@@ -929,8 +927,6 @@ function fun_set_solr_options() {
 										<div class="wdm_row">
 											<div class='avail_fac'>
 												<h4>Activate/deactivate items in the sort list</h4>
-												<input type='hidden' id='checked_options' name='checked_options'
-												       value='<?php echo $checked_fls ?>'>
 												<input type='hidden' id='select_sort' name='wdm_solr_sortby_data[sort]'
 												       value='<?php echo $selected_sort_value ?>'>
 
@@ -951,8 +947,8 @@ function fun_set_solr_options() {
 													}
 													foreach ( $built_in as $built ) {
 														if ( $built != '' ) {
-															$buil_fac = $built[ code ];
-															$dis_text = $built[ label ];
+															$buil_fac = $built['code'];
+															$dis_text = $built['label'];
 
 															if ( ! in_array( $buil_fac, $selected_array ) ) {
 
@@ -1077,7 +1073,7 @@ function fun_set_solr_options() {
 									       id='is_debug_indexing'
 									       name='wdm_solr_operations_data[is_debug_indexing]'
 									       value='is_debug_indexing'
-										<?php checked( 'is_debug_indexing', $solr_operations_options['is_debug_indexing'] ); ?>>
+										<?php checked( 'is_debug_indexing', isset( $solr_operations_options['is_debug_indexing'] ) ? $solr_operations_options['is_debug_indexing'] : '' ); ?>>
 									<span class='res_err'></span><br>
 								</div>
 								<div class="clear"></div>

@@ -125,24 +125,24 @@ class wp_Solr {
 		$results = array(
 
 			array(
-				code  => self::SORT_CODE_BY_RELEVANCY_DESC,
-				label => 'Most relevant',
+				'code'  => self::SORT_CODE_BY_RELEVANCY_DESC,
+				'label' => 'Most relevant',
 			),
 			array(
-				code  => self::SORT_CODE_BY_DATE_DESC,
-				label => 'Newest',
+				'code'  => self::SORT_CODE_BY_DATE_DESC,
+				'label' => 'Newest',
 			),
 			array(
-				code  => self::SORT_CODE_BY_DATE_ASC,
-				label => 'Oldest',
+				'code'  => self::SORT_CODE_BY_DATE_ASC,
+				'label' => 'Oldest',
 			),
 			array(
-				code  => self::SORT_CODE_BY_NUMBER_COMMENTS_DESC,
-				label => 'More comments',
+				'code'  => self::SORT_CODE_BY_NUMBER_COMMENTS_DESC,
+				'label' => 'More comments',
 			),
 			array(
-				code  => self::SORT_CODE_BY_NUMBER_COMMENTS_ASC,
-				label => 'Less comments',
+				'code'  => self::SORT_CODE_BY_NUMBER_COMMENTS_ASC,
+				'label' => 'Less comments',
 			),
 		);
 
@@ -165,7 +165,7 @@ class wp_Solr {
 		if ( $sort_code_to_retrieve != null ) {
 			foreach ( $sort_options as $sort ) {
 
-				if ( $sort[ code ] === $sort_code_to_retrieve ) {
+				if ( $sort['code'] === $sort_code_to_retrieve ) {
 					return $sort;
 				}
 			}
@@ -374,12 +374,14 @@ class wp_Solr {
 				}
 
 				if ( $queryTermsCorrected != $term ) {
-					$err_msg = 'Did you mean: <b>' . $queryTermsCorrected . '</b><br />';
+					$err_msg         = 'Did you mean: <b>' . $queryTermsCorrected . '</b><br />';
+					$search_result[] = $err_msg;
 
 					$query->setQuery( $queryTermsCorrected );
 
+				} else {
+					$search_result[] = 0;
 				}
-				$search_result[] = $err_msg;
 
 			} else {
 				$search_result[] = 0;
