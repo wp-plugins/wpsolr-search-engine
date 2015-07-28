@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.4
+Current Version: 4.5
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.4
+Stable tag: 4.5
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -82,8 +82,16 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 13. Front end: Did you mean ?
 14. Admin: Select attachment types to index
 15. Admin: The "Sort by" items list is configurable
+16. Admin: Change all front-end texts in admin
 
 == Changelog ==
+
+= 4.5 =
+* All front-end texts can be changed, with the dedicated admin screen (screenshot 16), or:
+- With gettext() standard .po/.mo files
+- With WPML string translation module
+* Translation files are not delivered, but /lang/wpsolr.pot can be used to generate the .po and .mo files, or WPSOLR sources can be parsed to generate a .pot file (with poedit free tool for instance).
+* Multi-language is not supported in Solr search, yet. Only the front-end texts can be multi-language.
 
 = 4.4 =
 * Fix several admin and front-end php notices

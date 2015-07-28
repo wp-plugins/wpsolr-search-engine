@@ -5,6 +5,7 @@ function func_reg_solr_form_setting() {
 	register_setting( 'solr_res_options', 'wdm_solr_res_data' );
 	register_setting( 'solr_facet_options', 'wdm_solr_facet_data' );
 	register_setting( 'solr_sort_options', 'wdm_solr_sortby_data' );
+	register_setting( 'solr_localization_options', 'wdm_solr_localization_data' );
 	register_setting( 'solr_extension_groups_options', 'wdm_solr_extension_groups_data' );
 	register_setting( 'solr_extension_s2member_options', 'wdm_solr_extension_s2member_data' );
 	register_setting( 'solr_operations_options', 'wdm_solr_operations_data' );
@@ -982,14 +983,18 @@ function fun_set_solr_options() {
 							<?php
 							break;
 
+						case 'localization_options':
+							WpSolrExtensions::require_once_wpsolr_extension_admin_options( WpSolrExtensions::OPTION_LOCALIZATION );
+							break;
+
 						case 'extension_groups_opt':
-							// Include the options form
 							WpSolrExtensions::require_once_wpsolr_extension_admin_options( WpSolrExtensions::EXTENSION_GROUPS );
 							break;
+
 						case 'extension_s2member_opt':
-							// Include the options form
 							WpSolrExtensions::require_once_wpsolr_extension_admin_options( WpSolrExtensions::EXTENSION_S2MEMBER );
 							break;
+
 					}
 
 					?>
@@ -1141,6 +1146,7 @@ function wpsolr_admin_sub_tabs( $current = 'index_opt' ) {
 		'result_opt'             => 'Result Options',
 		'facet_opt'              => 'Facets Options',
 		'sort_opt'               => 'Sort Options',
+		'localization_options'   => 'Localization Options',
 		'extension_groups_opt'   => 'Groups plugin options',
 		'extension_s2member_opt' => 's2Member plugin options'
 	);

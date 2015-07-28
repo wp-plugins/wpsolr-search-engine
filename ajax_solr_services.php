@@ -2,6 +2,9 @@
 
 include( dirname( __FILE__ ) . '/class-wp-solr.php' );
 
+// Load localization class
+WpSolrExtensions::require_once_wpsolr_extension( WpSolrExtensions::OPTION_LOCALIZATION, true );
+
 function solr_format_date( $thedate ) {
 	$datere  = '/(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})/';
 	$replstr = '${1}T${2}Z';
@@ -53,6 +56,9 @@ function fun_search_indexed_data() {
 
 	}
 
+	// Load localization options
+	$localization_options = OptionLocalization::get_options();
+
 	$wdm_typehead_request_handler = 'wdm_return_solr_rows';
 
 	echo "<div class='cls_search' style='width:100%'> <form action='$url' method='get'  class='search-frm' >";
@@ -69,14 +75,15 @@ function fun_search_indexed_data() {
 	$fac_opt = get_option( 'wdm_solr_facet_data' );
 
 	$get_page_info = get_page_by_title( 'Search Results' );
-	$url           = get_permalink( $get_page_info->ID );
+
 
 	echo $form = '
         <div class="ui-widget">
 	<input type="hidden" name="page_id" value="' . $get_page_info->ID . '" />
 	<input type="hidden"  id="ajax_nonce" value="' . $ajax_nonce . '">
-        <input type="text" placeholder="Search ..." value="' . $search_que . '" name="search" id="search_que" class="search-field sfl2" autocomplete="off"/>
-	<input type="submit" value="Search" id="searchsubmit" style="position:relative;width:auto"> <div style="clear:both"></div>
+        <input type="text" placeholder="' . OptionLocalization::get_term( $localization_options, 'search_form_edit_placeholder' ) . '" value="' . $search_que . '" name="search" id="search_que" class="search-field sfl2" autocomplete="off"/>
+	<input type="submit" value="' . OptionLocalization::get_term( $localization_options, 'search_form_button_label' ) . '" id="searchsubmit" style="position:relative;width:auto">
+	<div style="clear:both"></div>
         </div>
         </form>';
 
@@ -105,7 +112,7 @@ function fun_search_indexed_data() {
 			}
 
 			if ( $final_result[2] == 0 ) {
-				echo "<span class='infor'>No results found for $search_que</span>";
+				echo "<span class='infor'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_header_no_results_found' ), $search_que ) . "</span>";
 			} else {
 				echo '<div class="wdm_resultContainer">
                     <div class="wdm_list">';
@@ -116,15 +123,16 @@ function fun_search_indexed_data() {
 					$selected_sort_values = $all_sort_options['sort'];
 					if ( isset( $selected_sort_values ) && ( $selected_sort_values != '' ) ) {
 
-						$sort_select = "<label class='wdm_label'>Sort By</label>
-                                    <select class='select_field'>";
+						$term        = OptionLocalization::get_term( $localization_options, 'sort_header' );
+						$sort_select = "<label class='wdm_label'>$term</label><select class='select_field'>";
 
 						// Add options
 						$sort_options = wp_Solr::get_sort_options();
 						foreach ( explode( ',', $selected_sort_values ) as $sort_code ) {
-							$sort       = wp_Solr::get_sort_option_from_code( $sort_code, $sort_options );
-							$sort_label = $sort == null ? $sort_code : $sort['label'];
-							$selected   = $sort_default == $sort['code'] ? 'selected' : '';
+
+							$sort_label = OptionLocalization::get_term( $localization_options, $sort_code );
+
+							$selected = ( $sort_default == $sort_code ) ? 'selected' : '';
 							$sort_select .= "<option value='$sort_code' $selected>$sort_label</option>";
 						}
 
@@ -143,13 +151,15 @@ function fun_search_indexed_data() {
 						$facets_array = explode( ',', $fac_opt['facets'] );
 
 
-						$groups = '
-                                    <div><label class="wdm_label">Filter Results</label>
-                                    <input type="hidden" name="sel_fac_field" id="sel_fac_field" value="all" >
-                                    <ul class="wdm_ul">
-				    <li class="select_opt" id="all">ALL</li>
-				    ';
+						$groups = sprintf( "<div><label class='wdm_label'>%s</label>
+                                    <input type='hidden' name='sel_fac_field' id='sel_fac_field' value='all' >
+                                    <ul class='wdm_ul'><li class='select_opt' id='all'>%s</li>",
+							OptionLocalization::get_term( $localization_options, 'facets_header' ),
+							OptionLocalization::get_term( $localization_options, 'facets_element_all_results' )
+						);
 
+						$facet_element = OptionLocalization::get_term( $localization_options, 'facets_element' );
+						$facet_title   = OptionLocalization::get_term( $localization_options, 'facets_title' );
 						foreach ( $facets_array as $arr ) {
 							$field = ucfirst( $arr );
 							if ( isset( $final_result[1][ $arr ] ) && count( $final_result[1][ $arr ] ) > 0 ) {
@@ -158,12 +168,16 @@ function fun_search_indexed_data() {
 									$arr_val = substr( $arr_val, 0, ( strlen( $arr_val ) - 4 ) );
 								}
 								$arr_val = str_replace( '_', ' ', $arr_val );
-								$groups .= "<lh >By $arr_val</lh><br>";
+
+								$groups .= "<lh >" . sprintf( $facet_title, $arr_val ) . "</lh><br>";
 
 								foreach ( $final_result[1][ $arr ] as $val ) {
 									$name  = $val[0];
 									$count = $val[1];
-									$groups .= "<li class='select_opt' id='$field:$name:$count'>$name($count)</li>";
+
+									$groups .= "<li class='select_opt' id='$field:$name:$count'>"
+									           . sprintf( $facet_element, $name, $count )
+									           . "</li>";
 								}
 							}
 

@@ -7,12 +7,12 @@
 
 WpSolrExtensions::require_once_wpsolr_extension( WpSolrExtensions::EXTENSION_GROUPS, true );
 
-WpSolrGroups::update_custom_field_capabilities( WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
+PluginGroups::update_custom_field_capabilities( PluginGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
 
 $array_extension_options             = get_option( 'wdm_solr_extension_groups_data' );
 $is_plugin_active                    = WpSolrExtensions::is_plugin_active( WpSolrExtensions::EXTENSION_GROUPS );
-$is_plugin_custom_field_for_indexing = WpSolrGroups::get_custom_field_capabilities( WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
-$custom_field_for_indexing_name = WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES
+$is_plugin_custom_field_for_indexing = PluginGroups::get_custom_field_capabilities( PluginGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
+$custom_field_for_indexing_name = PluginGroups::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES
 ?>
 	<div id="extension_groups-options" class="wdm-vertical-tabs-content">
 		<form action="options.php" method="POST" id='extension_groups_settings_form'>
@@ -121,7 +121,7 @@ $custom_field_for_indexing_name = WpSolrGroups::CUSTOM_FIELD_NAME_STORING_POST_C
 												<textarea id='message_user_without_groups_shown_no_results'
 												          name='wdm_solr_extension_groups_data[message_user_without_groups_shown_no_results]'
 												          rows="4" cols="100"
-												          placeholder="<?php echo WpSolrGroups::DEFAULT_MESSAGE_NOT_AUTHORIZED; ?>"><?php echo empty( $solr_extension_groups_options['message_user_without_groups_shown_no_results'] ) ? trim( WpSolrGroups::DEFAULT_MESSAGE_NOT_AUTHORIZED ) : $solr_extension_groups_options['message_user_without_groups_shown_no_results']; ?></textarea>
+												          placeholder="<?php echo PluginGroups::DEFAULT_MESSAGE_NOT_AUTHORIZED; ?>"><?php echo empty( $solr_extension_groups_options['message_user_without_groups_shown_no_results'] ) ? trim( PluginGroups::DEFAULT_MESSAGE_NOT_AUTHORIZED ) : $solr_extension_groups_options['message_user_without_groups_shown_no_results']; ?></textarea>
 						<span class='res_err'></span><br>
 					</div>
 					<div class="clear"></div>

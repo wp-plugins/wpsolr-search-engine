@@ -25,25 +25,38 @@ class WpSolrExtensions {
 	/*
 	 * Public constants
 	 */
+	// Action to add custom query fields to a Solr select query
+	const ACTION_SOLR_ADD_QUERY_FIELDS = 'wpsolr_action_solr_add_query_fields';
+
+	// Option: localization
+	const OPTION_LOCALIZATION = 'Localization';
+
 	// Extension: Groups
 	const EXTENSION_GROUPS = 'Groups';
 
 	// Extension: s2member
 	const EXTENSION_S2MEMBER = 'S2Member';
 
-
-	// Action to add custom query fields to a Solr select query
-	const ACTION_SOLR_ADD_QUERY_FIELDS = 'wpsolr_action_solr_add_query_fields';
-
 	/*
 	 * Extensions configuration
 	 */
 	private static $extensions_array = array(
+		self::OPTION_LOCALIZATION   =>
+			array(
+				self::_CONFIG_EXTENSION_CLASS_NAME              => 'OptionLocalization',
+				self::_CONFIG_PLUGIN_CLASS_NAME                 => 'OptionLocalization',
+				self::_CONFIG_EXTENSION_FILE_PATH               => 'localization/option-localization.php',
+				self::_CONFIG_EXTENSION_ADMIN_OPTIONS_FILE_PATH => 'localization/admin_options.inc.php',
+				self::_CONFIG_OPTIONS                           => array(
+					self::_CONFIG_OPTIONS_DATA                 => 'wdm_solr_localization_data',
+					self::_CONFIG_OPTIONS_IS_ACTIVE_FIELD_NAME => 'is_extension_active'
+				)
+			),
 		self::EXTENSION_GROUPS   =>
 			array(
-				self::_CONFIG_EXTENSION_CLASS_NAME              => 'WpSolrGroups',
+				self::_CONFIG_EXTENSION_CLASS_NAME              => 'PluginGroups',
 				self::_CONFIG_PLUGIN_CLASS_NAME                 => 'Groups_WordPress',
-				self::_CONFIG_EXTENSION_FILE_PATH               => 'groups/wpsolr-groups.php',
+				self::_CONFIG_EXTENSION_FILE_PATH               => 'groups/plugin-groups.php',
 				self::_CONFIG_EXTENSION_ADMIN_OPTIONS_FILE_PATH => 'groups/admin_options.inc.php',
 				self::_CONFIG_OPTIONS                           => array(
 					self::_CONFIG_OPTIONS_DATA                 => 'wdm_solr_extension_groups_data',
@@ -52,9 +65,9 @@ class WpSolrExtensions {
 			),
 		self::EXTENSION_S2MEMBER =>
 			array(
-				self::_CONFIG_EXTENSION_CLASS_NAME              => 'WpSolrS2Member',
+				self::_CONFIG_EXTENSION_CLASS_NAME              => 'PluginS2Member',
 				self::_CONFIG_PLUGIN_CLASS_NAME                 => 'c_ws_plugin__s2member_utils_s2o',
-				self::_CONFIG_EXTENSION_FILE_PATH               => 's2member/wpsolr-s2member.php',
+				self::_CONFIG_EXTENSION_FILE_PATH               => 's2member/plugin-s2member.php',
 				self::_CONFIG_EXTENSION_ADMIN_OPTIONS_FILE_PATH => 's2member/admin_options.inc.php',
 				self::_CONFIG_OPTIONS                           => array(
 					self::_CONFIG_OPTIONS_DATA                 => 'wdm_solr_extension_s2member_data',

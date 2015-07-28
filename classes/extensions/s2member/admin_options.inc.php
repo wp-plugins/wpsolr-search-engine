@@ -8,15 +8,15 @@
 WpSolrExtensions::require_once_wpsolr_extension( WpSolrExtensions::EXTENSION_S2MEMBER, true );
 
 
-WpSolrS2Member::update_custom_field_capabilities( WpSolrS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
+PluginS2Member::update_custom_field_capabilities( PluginS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
 
 $extension_options_name = 'wdm_solr_extension_s2member_data';
 $settings_fields_name   = 'solr_extension_s2member_options';
 
 $array_extension_options             = get_option( $extension_options_name );
 $is_plugin_active                    = WpSolrExtensions::is_plugin_active( WpSolrExtensions::EXTENSION_S2MEMBER );
-$is_plugin_custom_field_for_indexing = WpSolrS2Member::get_custom_field_capabilities( WpSolrS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
-$custom_field_for_indexing_name = WpSolrS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES
+$is_plugin_custom_field_for_indexing = PluginS2Member::get_custom_field_capabilities( PluginS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES );
+$custom_field_for_indexing_name = PluginS2Member::CUSTOM_FIELD_NAME_STORING_POST_CAPABILITIES
 ?>
 
 <div id="extension_s2member-options" class="wdm-vertical-tabs-content">
@@ -129,7 +129,7 @@ $custom_field_for_indexing_name = WpSolrS2Member::CUSTOM_FIELD_NAME_STORING_POST
 												<textarea id='message_user_without_capabilities_shown_no_results'
 												          name='wdm_solr_extension_s2member_data[message_user_without_capabilities_shown_no_results]'
 												          rows="4" cols="100"
-												          placeholder="<?php echo WpSolrS2Member::DEFAULT_MESSAGE_NOT_AUTHORIZED; ?>"><?php echo empty( $solr_extension_s2member_options['message_user_without_capabilities_shown_no_results'] ) ? trim( WpSolrS2Member::DEFAULT_MESSAGE_NOT_AUTHORIZED ) : $solr_extension_s2member_options['message_user_without_capabilities_shown_no_results']; ?></textarea>
+												          placeholder="<?php echo PluginS2Member::DEFAULT_MESSAGE_NOT_AUTHORIZED; ?>"><?php echo empty( $solr_extension_s2member_options['message_user_without_capabilities_shown_no_results'] ) ? trim( PluginS2Member::DEFAULT_MESSAGE_NOT_AUTHORIZED ) : $solr_extension_s2member_options['message_user_without_capabilities_shown_no_results']; ?></textarea>
 					<span class='res_err'></span><br>
 				</div>
 				<div class="clear"></div>

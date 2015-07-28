@@ -305,9 +305,11 @@ class wp_Solr {
 		$output        = array();
 		$search_result = array();
 
-		$ind_opt = get_option( 'wdm_solr_form_data' );
-		$res_opt = get_option( 'wdm_solr_res_data' );
-		$fac_opt = get_option( 'wdm_solr_facet_data' );
+		// Load options
+		$ind_opt              = get_option( 'wdm_solr_form_data' );
+		$res_opt              = get_option( 'wdm_solr_res_data' );
+		$fac_opt              = get_option( 'wdm_solr_facet_data' );
+		$localization_options = OptionLocalization::get_options();
 
 		$number_of_res = $res_opt['no_res'];
 		if ( $number_of_res == '' ) {
@@ -374,7 +376,8 @@ class wp_Solr {
 				}
 
 				if ( $queryTermsCorrected != $term ) {
-					$err_msg         = 'Did you mean: <b>' . $queryTermsCorrected . '</b><br />';
+
+					$err_msg         = sprintf( OptionLocalization::get_term( $localization_options, 'results_header_did_you_mean' ), $queryTermsCorrected ) . '<br/>';
 					$search_result[] = $err_msg;
 
 					$query->setQuery( $queryTermsCorrected );
@@ -585,10 +588,11 @@ class wp_Solr {
 			}
 
 			// Informative bloc - Bottom right
-			$msg .= "<div class='p_misc'>By <span class='pauthor'>$auth</span>";
-			$msg .= empty( $cat ) ? "" : ", in <span class='pcat'>$cat</span>";
-			$msg .= ", on <span class='pdate'>$date</span>";
-			$msg .= empty( $no_comments ) ? "" : ", <span class='pcat'> $no_comments comments</span>";
+			$msg .= "<div class='p_misc'>";
+			$msg .= "<span class='pauthor'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_row_by_author' ), $auth ) . "</span>";
+			$msg .= empty( $cat ) ? "" : "<span class='pcat'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_row_in_category' ), $cat ) . "</span>";
+			$msg .= "<span class='pdate'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_row_on_date' ), $date ) . "</span>";
+			$msg .= empty( $no_comments ) ? "" : "<span class='pcat'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_row_number_comments' ), $no_comments ) . "</span>";
 			$msg .= "</div>";
 
 			// End of snippet bloc
@@ -615,7 +619,7 @@ class wp_Solr {
 			$last = $st + $number_of_res;
 		}
 
-		$search_result[] = "<span class='infor'>Showing $fir to $last results out of $found</span>";
+		$search_result[] = "<span class='infor'>" . sprintf( OptionLocalization::get_term( $localization_options, 'results_header_pagination_numbers' ), $fir, $last, $found ) . "</span>";
 
 
 		return $search_result;
