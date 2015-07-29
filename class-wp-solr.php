@@ -1036,11 +1036,11 @@ class wp_Solr {
 		$solarium_document_for_update = $solarium_update_query->createDocument();
 		$numcomments                  = 0;
 
-		$solarium_document_for_update->id      = $pid;
-		$solarium_document_for_update->PID     = $pid;
-		$solarium_document_for_update->title   = $ptitle;
-		$solarium_document_for_update->content = strip_tags( $pcontent );
-
+		$solarium_document_for_update->id    = $pid;
+		$solarium_document_for_update->PID   = $pid;
+		$solarium_document_for_update->title = $ptitle;
+		// Remove HTML tags and shortcodes
+		$solarium_document_for_update->content         = strip_shortcodes( strip_tags( $pcontent ) );
 		$solarium_document_for_update->author          = $pauthor;
 		$solarium_document_for_update->author_s        = $pauthor_s;
 		$solarium_document_for_update->type            = $ptype;

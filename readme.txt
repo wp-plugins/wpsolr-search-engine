@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.5
+Current Version: 4.6
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.5
+Stable tag: 4.6
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -85,6 +85,10 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 16. Admin: Change all front-end texts in admin
 
 == Changelog ==
+
+= 4.6 =
+* Remove shortcodes from results by stripping shortcodes from documents indexed.
+* WARNING: this will require you to re-index all your documents. It can take a while if you have a large amount of documents in your WP database.
 
 = 4.5 =
 * All front-end texts can be changed, with the dedicated admin screen (screenshot 16), or:
