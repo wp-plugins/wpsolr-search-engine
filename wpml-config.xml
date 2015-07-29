@@ -1,0 +1,14 @@
+<wpml-config>
+    <!-- Options to be translated. See https://wpml.org/documentation/support/language-configuration-files/ -->
+    <admin-texts>
+        <key name="wdm_solr_localization_data">
+        <key name="solr_localization_options">
+            <key name="section_code_search_form">
+                <key name="section_terms">
+                    <key name="sort_header">
+                    </key>
+                </key>
+            </key>
+        </key>
+    </admin-texts>
+</wpml-config>

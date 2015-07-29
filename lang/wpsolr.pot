@@ -1,0 +1,142 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Apache Solr search by WPSOLR\n"
+"POT-Creation-Date: 2015-07-28 14:09+0200\n"
+"PO-Revision-Date: 2015-07-27 15:27+0200\n"
+"Last-Translator: Patrice Bourgougnon <patrice.bourgougnon@eostis.com>\n"
+"Language-Team: Patrice Bourgougnon <patrice.bourgougnon@eostis.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: wpsolr_search_engine.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: classes/extensions/localization/option-localization.php:52
+msgctxt "Search form button label"
+msgid "Search"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:53
+msgctxt "Search edit placeholder"
+msgid "Search ...."
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:54
+msgctxt "Sort list header"
+msgid "Sort by"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:56
+msgctxt "Sort list element"
+msgid "More relevant"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:57
+msgctxt "Sort list element"
+msgid "Newest"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:58
+msgctxt "Sort list element"
+msgid "Oldest"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:59
+msgctxt "Sort list element"
+msgid "The more commented"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:60
+msgctxt "Sort list element"
+msgid "The least commented"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:61
+msgctxt "Facets list header"
+msgid "Filters"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:63
+#, php-format
+msgctxt "Facets list title"
+msgid "By %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:64
+msgctxt "Facets list element all results"
+msgid "All results"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:65
+#, php-format
+msgctxt "Facets list element name with #results"
+msgid "%s (%d)"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:67
+#, php-format
+msgctxt "Results header: did you mean ?"
+msgid "Did you mean: %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:68
+#, php-format
+msgctxt "Results header: pagination numbers"
+msgid "Showing %d to %d results out of %d"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:69
+#, php-format
+msgctxt "Results header: no results found"
+msgid "No results found for %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:70
+#, php-format
+msgctxt "Result row information box: by author"
+msgid "By %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:71
+#, php-format
+msgctxt "Result row information box: in category"
+msgid ", in %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:72
+#, php-format
+msgctxt "Result row information box: on date"
+msgid ", on %s"
+msgstr ""
+
+#: classes/extensions/localization/option-localization.php:73
+#, php-format
+msgctxt "Result row information box: number of comments"
+msgid ", %d comments"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Apache Solr search by WPSOLR"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.wpsolr.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Replace your sluggish and rigid SQL search with the world open source leader "
+"Apache Solr wich powers the leading internet websites"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WPSOLR.COM"
+msgstr ""
