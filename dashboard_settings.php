@@ -114,6 +114,36 @@ function fun_set_solr_options() {
 	<div class="wdm-wrap" xmlns="http://www.w3.org/1999/html">
 		<div class="page_title"><h1>WPSOLR Settings </h1></div>
 
+		<div class="indexing_option wrapper">
+			<h4 class='head_div'>No taste, no time, or no skills to manage your own Solr server ?</h4>
+
+			<div class='col_left' style='width:90%'>
+				WPSOLR is free, but requires a Solr server properly installed and configured.
+				<a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a> can provide a production ready Solr for WPSOLR.
+				Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress" target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with the following plans:
+			</div>
+
+			<div class='col_right' style='width:90%'>
+				<input name="gotosolr_plan_yearly_trial"
+				       type="button" class="button-primary"
+				       value="Test one month with our yearly trial"
+				       onclick="window.open('https://secure.avangate.com/order/trial.php?PRODS=4642999&amp;QTY=1&amp;PRICES4642999%5BEUR%5D=0&amp;TPERIOD=30&amp;PHASH=bb55c3bd6407e03a8b5fc91358347a4c', '__blank');"
+					/>
+				<input name="gotosolr_plan_yearly"
+				       type="button" class="button-primary"
+				       value="Build your yearly plan with your own features"
+				       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4642999&QTY=1&CART=1&CARD=1', '__blank');"
+					/>
+				<input name="gotosolr_plan_monthly"
+				       type="button" class="button-primary"
+				       value="Build your monthly plan with your own features"
+				       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4653966&QTY=1&CART=1&CARD=1', '__blank');"
+					/>
+			</div>
+			<div class="clear"></div>
+		</div>
+
+
 		<?php
 		if ( isset ( $_GET['tab'] ) ) {
 			wpsolr_admin_tabs( $_GET['tab'] );
@@ -312,42 +342,6 @@ function fun_set_solr_options() {
 							echo "style='display:none'";
 						} ?>>
 							<h4 class='head_div'>Solr Hosting Connection</h4>
-
-							<div class='wdm_note'>
-								<h4 class='head_div'>Solr hosting subscriptions</h4>
-
-								<div class="wdm_row">
-									<div class='col_left'><a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a>
-										can provide a production ready Solr for WPSOLR.<br>
-										WPSOLR is free, but you can buy and configure a Solr hosting subscription
-										according to your needs.<br><br>
-										Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress"
-										             target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with
-										Gotosolr hosting
-									</div>
-
-									<div class='col_right'>
-										<input name="gotosolr_plan_yearly_trial"
-										       type="button" class="button-primary wdm-save"
-										       value="Test one month with our yearly trial"
-										       onclick="window.open('https://secure.avangate.com/order/trial.php?PRODS=4642999&amp;QTY=1&amp;PRICES4642999%5BEUR%5D=0&amp;TPERIOD=30&amp;PHASH=bb55c3bd6407e03a8b5fc91358347a4c', '__blank');"
-											/>
-										<input name="gotosolr_plan_yearly"
-										       type="button" class="button-primary wdm-save"
-										       value="Build your yearly plan with your own features"
-										       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4642999&QTY=1&CART=1&CARD=1', '__blank');"
-											/>
-										<input name="gotosolr_plan_monthly"
-										       type="button" class="button-primary wdm-save"
-										       value="Build your monthly plan with your own features"
-										       onclick="window.open('https://secure.avangate.com/order/checkout.php?PRODS=4653966&QTY=1&CART=1&CARD=1', '__blank');"
-											/>
-									</div>
-									<div class="clear"></div>
-
-								</div>
-
-							</div>
 
 							<div class="wdm_note">
 
