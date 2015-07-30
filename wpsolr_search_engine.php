@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Apache Solr search by WPSOLR
  * Description: Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
- * Version: 4.6
+ * Version: 4.7
  * Author: WPSOLR.COM
  * Plugin URI: http://www.wpsolr.com
  * License: GPL2
@@ -218,6 +218,9 @@ function solr_search_form() {
 	// Get localization options
 	$localization_options = OptionLocalization::get_options();
 
+	// Get the result option
+	$results_options = get_option( 'wdm_solr_res_data' );
+
 	$wdm_typehead_request_handler = 'wdm_return_solr_rows';
 
 	$get_page_info = get_page_by_title( 'Search Results' );
@@ -225,19 +228,20 @@ function solr_search_form() {
 
 
 	$url  = get_permalink( $get_page_info->ID );
-	$form = "<div class='cls_search' style='width:100%'><form action='$url' method='get'  class='search-frm2' >
-   ";
+	$form = "<div class='cls_search' style='width:100%'><form action='$url' method='get'  class='search-frm2' >";
 	$form .= '<input type="hidden" value="' . $wdm_typehead_request_handler . '" id="path_to_fold">';
 	$form .= '<input type="hidden"  id="ajax_nonce" value="' . $ajax_nonce . '">';
 
 	$form .= '<input type="hidden" value="' . $ad_url . '" id="path_to_admin">';
 	$form .= '<input type="hidden" value="' . $search_que . '" id="search_opt">';
 
+	$is_after_autocomplete_block_submit = isset( $results_options['is_after_autocomplete_block_submit'] ) ? $results_options['is_after_autocomplete_block_submit'] : '0';
+	$form .= "<input type='hidden' value='$is_after_autocomplete_block_submit' id='is_after_autocomplete_block_submit'>";
 
 	$form .= '
        <div class="ui-widget search-box">
         <input type="hidden" name="page_id" value="' . $get_page_info->ID . '" />
-	<input type="hidden"  id="ajax_nonce" value="' . $ajax_nonce . '">
+ 	<input type="hidden"  id="ajax_nonce" value="' . $ajax_nonce . '">
         <input type="text" placeholder="' . OptionLocalization::get_term( $localization_options, 'search_form_edit_placeholder' ) . '" value="' . $search_que . '" name="search" id="search_que" class="search-field sfl1" autocomplete="off"/>
 	<input type="submit" value="' . OptionLocalization::get_term( $localization_options, 'search_form_button_label' ) . '" id="searchsubmit" style="position:relative;width:auto">
         <div style="clear:both"></div>

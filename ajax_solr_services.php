@@ -76,6 +76,8 @@ function fun_search_indexed_data() {
 
 	$get_page_info = get_page_by_title( 'Search Results' );
 
+	// Block or start search after autocomplete selecton
+	$is_after_autocomplete_block_submit = isset( $solr_form_options['is_after_autocomplete_block_submit'] ) ? $solr_form_options['is_after_autocomplete_block_submit'] : '0';
 
 	echo $form = '
         <div class="ui-widget">
@@ -83,7 +85,8 @@ function fun_search_indexed_data() {
 	<input type="hidden"  id="ajax_nonce" value="' . $ajax_nonce . '">
         <input type="text" placeholder="' . OptionLocalization::get_term( $localization_options, 'search_form_edit_placeholder' ) . '" value="' . $search_que . '" name="search" id="search_que" class="search-field sfl2" autocomplete="off"/>
 	<input type="submit" value="' . OptionLocalization::get_term( $localization_options, 'search_form_button_label' ) . '" id="searchsubmit" style="position:relative;width:auto">
-	<div style="clear:both"></div>
+	<input type="hidden" value="' . $is_after_autocomplete_block_submit . '" id="is_after_autocomplete_block_submit">
+<div style="clear:both"></div>
         </div>
         </form>';
 

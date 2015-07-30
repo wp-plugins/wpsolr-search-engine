@@ -2,7 +2,7 @@
 
 Contributors: WPSOLR.COM
 
-Current Version: 4.6
+Current Version: 4.7
 
 Author:  WPSOLR.COM
 
@@ -14,7 +14,7 @@ Requires at least: 3.7.1
 
 Tested up to: 4.2.2
 
-Stable tag: 4.6
+Stable tag: 4.7
 
 Replace your sluggish and rigid SQL search with the world open source leader Apache Solr wich powers the leading internet websites
 
@@ -85,6 +85,9 @@ For a live demo visit <a href='http://www.gotosolr.com/search-results/?search=so
 16. Admin: Change all front-end texts in admin
 
 == Changelog ==
+
+= 4.7 =
+* (Screenshot 6) A new option can prevent/enforce submitting the search form after selecting a value from the autocomplete list.
 
 = 4.6 =
 * Remove shortcodes from results by stripping shortcodes from documents indexed.

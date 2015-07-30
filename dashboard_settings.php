@@ -119,8 +119,10 @@ function fun_set_solr_options() {
 
 			<div class='col_left' style='width:90%'>
 				WPSOLR is free, but requires a Solr server properly installed and configured.
-				<a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a> can provide a production ready Solr for WPSOLR.
-				Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress" target="_wpsolr-tutorial">tutorial</a> to setup WPSOLR with the following plans:
+				<a href="http://www.gotosolr.com/en" target="__gotosolr">http://gotosolr.com</a> can provide a
+				production ready Solr for WPSOLR.
+				Here is a <a href="http://www.gotosolr.com/en/solr-tutorial-for-wordpress" target="_wpsolr-tutorial">tutorial</a>
+				to setup WPSOLR with the following plans:
 			</div>
 
 			<div class='col_right' style='width:90%'>
@@ -488,11 +490,12 @@ function fun_set_solr_options() {
 									<?php
 									settings_fields( 'solr_res_options' );
 									$solr_res_options = get_option( 'wdm_solr_res_data', array(
-										'default_search' => 0,
-										'res_info'       => '0',
-										'spellchecker'   => '0'
-
+										'default_search'                     => 0,
+										'res_info'                           => '0',
+										'spellchecker'                       => '0',
+										'is_after_autocomplete_block_submit' => '1',
 									) );
+
 									?>
 
 									<div class='wrapper'>
@@ -503,6 +506,20 @@ function fun_set_solr_options() {
 											In this section, you will choose how to display the results returned by a
 											query to your Solr instance.
 
+										</div>
+										<div class="wdm_row">
+											<div class='col_left'>Do not automatically trigger the search, when a user
+												clicks on the
+												autocomplete list
+											</div>
+											<div class='col_right'>
+												<?php $is_after_autocomplete_block_submit = isset( $solr_res_options['is_after_autocomplete_block_submit'] ) ? '1' : '0'; ?>
+												<input type='checkbox'
+												       name='wdm_solr_res_data[is_after_autocomplete_block_submit]'
+												       value='1'
+													<?php checked( '1', $is_after_autocomplete_block_submit ); ?>>
+											</div>
+											<div class="clear"></div>
 										</div>
 										<div class="wdm_row">
 											<div class='col_left'>Display suggestions (Did you mean?)</div>
