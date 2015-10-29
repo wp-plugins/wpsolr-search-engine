@@ -5,7 +5,7 @@ jQuery(document).ready(function () {
     var wdm_object_for_search_values = new Object();
 
 
-    jQuery('.search-field').live('focus', function () {
+    jQuery(document).on('focus', '.search-field', function () {
         var admin_path = jQuery('#path_to_admin').val() + 'admin-ajax.php';
         var wdm_action = jQuery('#path_to_fold').val();
 
@@ -35,7 +35,7 @@ jQuery(document).ready(function () {
     })
 
 
-    jQuery('.select_opt').live('click', function () {
+    jQuery(document).on('click', '.select_opt', function () {
         opts = jQuery(this).attr('id');
         jQuery('#sel_fac_field').val(opts);
         if (jQuery('.select_field').length > 0)
@@ -72,7 +72,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.select_field').live('change', function () {
+    jQuery(document).on('change', '.select_field', function () {
 
         sort_opt = jQuery(this).val();
         if (jQuery('#sel_fac_field').length > 0)
@@ -108,7 +108,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.paginate').live('click', function () {
+    jQuery(document).on('click', '.paginate', function () {
         num = jQuery(this).attr('id');
         sort_opt = jQuery('.select_field').val();
         que = jQuery('#search_que').val();
